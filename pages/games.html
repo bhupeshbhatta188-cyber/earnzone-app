@@ -4,133 +4,56 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EarnZone — Play & Earn</title>
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
-  <meta property="og:title" content="EarnZone — Watch. Play. Earn Real Money." />
-  <meta property="og:description" content="Earn real money watching videos and playing games. Redeem via eSewa, Khalti or PayPal!" />
-  <meta property="og:image" content="../og-image.svg" />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="../css/style.css" />
   <style>
-    .page { padding-top: 80px; }
-    .page-header { padding: 32px 24px 0; max-width: 1100px; margin: 0 auto; }
-    .page-title { font-size: 28px; font-weight: 700; font-family: 'Syne', sans-serif; }
-    .page-sub { color: var(--muted); font-size: 14px; margin-top: 6px; margin-bottom: 32px; }
-
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px; padding: 0 24px 40px;
-      max-width: 1100px; margin: 0 auto;
-    }
-    .game-card {
-      background: var(--dark2); border: 1px solid var(--border);
-      border-radius: 20px; overflow: hidden; cursor: pointer;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-    .game-card:hover { transform: translateY(-6px); border-color: rgba(245,158,11,0.4); }
-    .game-thumb {
-      height: 140px; display: flex; align-items: center; justify-content: center;
-      font-size: 64px; position: relative;
-    }
-    .g1 { background: linear-gradient(135deg, #1a1a2e, #6a11cb); }
-    .g2 { background: linear-gradient(135deg, #134e5e, #71b280); }
-    .g3 { background: linear-gradient(135deg, #c94b4b, #4b134f); }
-    .g4 { background: linear-gradient(135deg, #f7971e, #ffd200); }
-    .game-badge-tag {
-      position: absolute; top: 10px; right: 10px;
-      font-size: 10px; font-weight: 600; padding: 3px 10px;
-      border-radius: 999px;
-    }
-    .hot { background: #ef4444; color: #fff; }
-    .new-tag { background: #10b981; color: #fff; }
-    .game-body { padding: 18px 20px; }
-    .game-name { font-size: 17px; font-weight: 600; font-family: 'Syne', sans-serif; margin-bottom: 4px; }
-    .game-desc { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
-    .game-footer { display: flex; align-items: center; justify-content: space-between; }
-    .game-pts-earn { font-size: 13px; color: var(--gold); font-weight: 500; }
-    .play-tag {
-      padding: 7px 16px; background: var(--gold); color: var(--dark);
-      border-radius: 8px; font-size: 13px; font-weight: 500;
-    }
-
-    /* MODAL BASE */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.9);
-      z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--dark2); border: 1px solid var(--border);
-      border-radius: 24px; width: 100%; max-width: 480px;
-      padding: 32px; position: relative; animation: fadeUp 0.3s ease;
-      text-align: center;
-    }
-    .modal-title { font-size: 22px; font-weight: 700; font-family: 'Syne', sans-serif; margin-bottom: 8px; }
-    .modal-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
-    .close-x {
-      position: absolute; top: 16px; right: 16px; background: var(--dark3);
-      border: 1px solid var(--border); color: var(--text); width: 32px; height: 32px;
-      border-radius: 50%; font-size: 14px; cursor: pointer; display: flex;
-      align-items: center; justify-content: center;
-    }
-    .action-btn {
-      padding: 13px 32px; background: var(--gold); color: var(--dark);
-      border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
-      cursor: pointer; font-family: 'Syne', sans-serif; margin-top: 20px;
-      transition: background 0.2s, transform 0.1s; width: 100%;
-    }
-    .action-btn:hover { background: var(--gold-dark); }
-    .action-btn:disabled { background: var(--dark3); color: var(--muted); cursor: not-allowed; }
-    .result-box {
-      background: var(--dark3); border-radius: 14px; padding: 20px;
-      margin-top: 20px; display: none;
-    }
-    .result-pts { font-size: 36px; font-weight: 700; color: var(--gold); font-family: 'Syne', sans-serif; }
-    .result-msg { font-size: 14px; color: var(--muted); margin-top: 4px; }
-
-    /* SPIN WHEEL */
-    #wheelCanvas { border-radius: 50%; margin: 0 auto; display: block; }
-
-    /* SCRATCH CARD */
-    .scratch-wrap { position: relative; width: 220px; height: 120px; margin: 0 auto; border-radius: 14px; overflow: hidden; cursor: crosshair; }
-    #scratchCanvas { position: absolute; top: 0; left: 0; }
-    .scratch-reveal {
-      width: 100%; height: 100%;
-      background: linear-gradient(135deg, var(--gold), #ff9500);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 32px; font-weight: 700; font-family: 'Syne', sans-serif; color: var(--dark);
-    }
-
-    /* QUIZ */
-    .quiz-q { font-size: 16px; font-weight: 500; margin-bottom: 20px; line-height: 1.5; }
-    .quiz-opts { display: flex; flex-direction: column; gap: 10px; text-align: left; }
-    .quiz-opt {
-      padding: 12px 16px; background: var(--dark3); border: 1px solid var(--border);
-      border-radius: 10px; cursor: pointer; font-size: 14px; transition: all 0.2s;
-    }
-    .quiz-opt:hover { border-color: var(--gold); }
-    .quiz-opt.correct { border-color: var(--success); background: rgba(16,185,129,0.1); color: var(--success); }
-    .quiz-opt.wrong { border-color: var(--danger); background: rgba(239,68,68,0.1); color: var(--danger); }
-    .quiz-score { font-size: 14px; color: var(--muted); }
-
-    /* MEMORY */
-    .memory-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 10px; margin: 0 auto; max-width: 300px;
-    }
-    .mem-card {
-      height: 60px; border-radius: 10px; background: var(--dark3);
-      border: 1px solid var(--border); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; transition: all 0.2s; user-select: none;
-    }
-    .mem-card.flipped { background: var(--dark2); border-color: var(--gold); }
-    .mem-card.matched { background: rgba(16,185,129,0.15); border-color: var(--success); }
+    .page{padding-top:80px}
+    .page-header{padding:32px 24px 0;max-width:1100px;margin:0 auto}
+    .page-title{font-size:28px;font-weight:700;font-family:'Syne',sans-serif}
+    .page-sub{color:var(--muted);font-size:14px;margin-top:6px;margin-bottom:32px}
+    .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding:0 24px 40px;max-width:1100px;margin:0 auto}
+    .game-card{background:var(--dark2);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform 0.2s,border-color 0.2s}
+    .game-card:hover{transform:translateY(-6px);border-color:rgba(245,158,11,0.4)}
+    .game-thumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:64px;position:relative}
+    .g1{background:linear-gradient(135deg,#1a1a2e,#6a11cb)}
+    .g2{background:linear-gradient(135deg,#134e5e,#71b280)}
+    .g3{background:linear-gradient(135deg,#c94b4b,#4b134f)}
+    .g4{background:linear-gradient(135deg,#f7971e,#ffd200)}
+    .game-badge-tag{position:absolute;top:10px;right:10px;font-size:10px;font-weight:600;padding:3px 10px;border-radius:999px}
+    .hot{background:#ef4444;color:#fff}
+    .new-tag{background:#10b981;color:#fff}
+    .game-body{padding:18px 20px}
+    .game-name{font-size:17px;font-weight:600;font-family:'Syne',sans-serif;margin-bottom:4px}
+    .game-desc{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:14px}
+    .game-footer{display:flex;align-items:center;justify-content:space-between}
+    .game-pts-earn{font-size:13px;color:var(--gold);font-weight:500}
+    .play-tag{padding:7px 16px;background:var(--gold);color:var(--dark);border-radius:8px;font-size:13px;font-weight:500}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--dark2);border:1px solid var(--border);border-radius:24px;width:100%;max-width:480px;padding:32px;position:relative;animation:fadeUp 0.3s ease;text-align:center}
+    .modal-title{font-size:22px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:8px}
+    .modal-sub{font-size:14px;color:var(--muted);margin-bottom:28px}
+    .close-x{position:absolute;top:16px;right:16px;background:var(--dark3);border:1px solid var(--border);color:var(--text);width:32px;height:32px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .action-btn{padding:13px 32px;background:var(--gold);color:var(--dark);border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif;margin-top:20px;width:100%;transition:all 0.2s}
+    .action-btn:disabled{background:var(--dark3);color:var(--muted);cursor:not-allowed}
+    .result-box{background:var(--dark3);border-radius:14px;padding:20px;margin-top:20px;display:none}
+    .result-pts{font-size:36px;font-weight:700;color:var(--gold);font-family:'Syne',sans-serif}
+    .scratch-wrap{position:relative;width:220px;height:120px;margin:0 auto;border-radius:14px;overflow:hidden;cursor:crosshair}
+    #scratchCanvas{position:absolute;top:0;left:0}
+    .scratch-reveal{width:100%;height:100%;background:linear-gradient(135deg,var(--gold),#ff9500);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;font-family:'Syne',sans-serif;color:var(--dark)}
+    .quiz-q{font-size:16px;font-weight:500;margin-bottom:20px;line-height:1.5}
+    .quiz-opts{display:flex;flex-direction:column;gap:10px;text-align:left}
+    .quiz-opt{padding:12px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:14px;transition:all 0.2s}
+    .quiz-opt:hover{border-color:var(--gold)}
+    .quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,0.1);color:var(--success)}
+    .quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,0.1);color:var(--danger)}
+    .memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 auto;max-width:300px}
+    .mem-card{height:60px;border-radius:10px;background:var(--dark3);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;transition:all 0.2s;user-select:none}
+    .mem-card.flipped{background:var(--dark2);border-color:var(--gold)}
+    .mem-card.matched{background:rgba(16,185,129,0.15);border-color:var(--success)}
+    .cooldown-msg{font-size:13px;color:var(--muted);margin-top:12px}
   </style>
 </head>
 <body>
-
 <nav>
   <div class="logo"><a href="../index.html" style="color:inherit;text-decoration:none;">Earn<span>Zone</span></a></div>
   <ul class="nav-links">
@@ -139,62 +62,46 @@
     <li><a href="dashboard.html">Dashboard</a></li>
   </ul>
   <div class="nav-right">
-    <div class="pts-pill">🪙 <span class="ez-pts">0</span> pts</div>
+    <div class="pts-pill">🪙 <span id="navPts">0</span> pts</div>
   </div>
 </nav>
 
 <div class="page">
   <div class="page-header">
     <div class="page-title">🎮 Play & Earn</div>
-    <div class="page-sub">Play fun games and earn real points instantly!</div>
+    <div class="page-sub">Play games and earn real points saved to your account!</div>
   </div>
-
   <div class="games-grid">
     <div class="game-card" onclick="openGame('spin')">
       <div class="game-thumb g1">🎡<span class="game-badge-tag hot">HOT</span></div>
       <div class="game-body">
         <div class="game-name">Spin the Wheel</div>
         <div class="game-desc">Spin and win random points every time! Up to 50 pts per spin.</div>
-        <div class="game-footer">
-          <div class="game-pts-earn">Up to +50 pts</div>
-          <div class="play-tag">Play →</div>
-        </div>
+        <div class="game-footer"><div class="game-pts-earn">Up to +50 pts</div><div class="play-tag">Play →</div></div>
       </div>
     </div>
-
     <div class="game-card" onclick="openGame('scratch')">
       <div class="game-thumb g2">🎴<span class="game-badge-tag new-tag">NEW</span></div>
       <div class="game-body">
         <div class="game-name">Scratch Card</div>
         <div class="game-desc">Scratch to reveal your hidden prize. Could be 5 to 100 pts!</div>
-        <div class="game-footer">
-          <div class="game-pts-earn">Up to +100 pts</div>
-          <div class="play-tag">Play →</div>
-        </div>
+        <div class="game-footer"><div class="game-pts-earn">Up to +100 pts</div><div class="play-tag">Play →</div></div>
       </div>
     </div>
-
     <div class="game-card" onclick="openGame('quiz')">
       <div class="game-thumb g3">❓</div>
       <div class="game-body">
         <div class="game-name">Quiz Challenge</div>
         <div class="game-desc">Answer 5 questions correctly and earn bonus points!</div>
-        <div class="game-footer">
-          <div class="game-pts-earn">+5 pts per answer</div>
-          <div class="play-tag">Play →</div>
-        </div>
+        <div class="game-footer"><div class="game-pts-earn">+5 pts per answer</div><div class="play-tag">Play →</div></div>
       </div>
     </div>
-
     <div class="game-card" onclick="openGame('memory')">
       <div class="game-thumb g4">🃏</div>
       <div class="game-body">
         <div class="game-name">Memory Match</div>
         <div class="game-desc">Match all pairs to win! Earn points for each correct match.</div>
-        <div class="game-footer">
-          <div class="game-pts-earn">+5 pts per match</div>
-          <div class="play-tag">Play →</div>
-        </div>
+        <div class="game-footer"><div class="game-pts-earn">+5 pts per match</div><div class="play-tag">Play →</div></div>
       </div>
     </div>
   </div>
@@ -210,8 +117,9 @@
     <button class="action-btn" id="spinBtn" onclick="spinWheel()">SPIN NOW!</button>
     <div class="result-box" id="spinResult">
       <div class="result-pts" id="spinPts">+0</div>
-      <div class="result-msg">Points added to your account!</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:4px;">Points saved to your account!</div>
     </div>
+    <div class="cooldown-msg" id="spinCooldown"></div>
   </div>
 </div>
 
@@ -235,12 +143,12 @@
   <div class="modal">
     <button class="close-x" onclick="closeAll()">✕</button>
     <div class="modal-title">❓ Quiz Challenge</div>
-    <div class="quiz-score" id="quizScore" style="margin-bottom:16px;">Question 1/5 · Score: 0 pts</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px;" id="quizScore">Question 1/5 · Score: 0 pts</div>
     <div class="quiz-q" id="quizQ">Loading...</div>
     <div class="quiz-opts" id="quizOpts"></div>
     <div class="result-box" id="quizResult">
       <div class="result-pts" id="quizFinalPts">+0</div>
-      <div class="result-msg">Quiz complete! Points added!</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:4px;">Points saved!</div>
       <button class="action-btn" onclick="startQuiz()">Play Again</button>
     </div>
   </div>
@@ -251,11 +159,11 @@
   <div class="modal">
     <button class="close-x" onclick="closeAll()">✕</button>
     <div class="modal-title">🃏 Memory Match</div>
-    <div class="modal-sub" id="memScore">Matches: 0/8 · Points: 0</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:16px;" id="memScore">Matches: 0/8 · Points: 0</div>
     <div class="memory-grid" id="memoryGrid"></div>
     <div class="result-box" id="memResult">
       <div class="result-pts" id="memFinalPts">+0</div>
-      <div class="result-msg">All pairs matched!</div>
+      <div style="font-size:14px;color:var(--muted);margin-top:4px;">All matched! Points saved!</div>
       <button class="action-btn" onclick="startMemory()">Play Again</button>
     </div>
   </div>
@@ -263,200 +171,229 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
-  
-  
+  firebase.initializeApp({
+    apiKey: "AIzaSyB94zgBIclBjVTgiuR_ceRuCoQtx555Qk8",
+    authDomain: "earnzone-51a4f.firebaseapp.com",
+    projectId: "earnzone-51a4f",
+    storageBucket: "earnzone-51a4f.firebasestorage.app",
+    messagingSenderId: "263039604264",
+    appId: "1:263039604264:web:845b2389b49e572209071d"
+  });
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  auth.onAuthStateChanged(user => {
+    if (!user) window.location.href = 'login.html';
+    else {
+      db.collection('users').doc(user.uid).get().then(snap => {
+        if (snap.exists) document.getElementById('navPts').textContent = snap.data().points || 0;
+      });
+    }
+  });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.display = 'block';
+    setTimeout(()=>t.style.display='none', 3000);
+  }
+
+  async function addPoints(amount, reason) {
+    const user = auth.currentUser;
+    if (!user) return;
+    await db.collection('users').doc(user.uid).update({
+      points: firebase.firestore.FieldValue.increment(amount),
+      history: firebase.firestore.FieldValue.arrayUnion({ amount, reason, date: new Date().toISOString() })
+    });
+    // Update navbar
+    const snap = await db.collection('users').doc(user.uid).get();
+    document.getElementById('navPts').textContent = snap.data().points || 0;
+    showToast('+' + amount + ' pts saved! 🎉');
+  }
 
   function openGame(type) {
     closeAll();
-    if (type === 'spin') { document.getElementById('spinModal').classList.add('open'); drawWheel(); }
-    if (type === 'scratch') { document.getElementById('scratchModal').classList.add('open'); newScratch(); }
-    if (type === 'quiz') { document.getElementById('quizModal').classList.add('open'); startQuiz(); }
-    if (type === 'memory') { document.getElementById('memoryModal').classList.add('open'); startMemory(); }
+    if (type==='spin') { document.getElementById('spinModal').classList.add('open'); drawWheel(); }
+    if (type==='scratch') { document.getElementById('scratchModal').classList.add('open'); newScratch(); }
+    if (type==='quiz') { document.getElementById('quizModal').classList.add('open'); startQuiz(); }
+    if (type==='memory') { document.getElementById('memoryModal').classList.add('open'); startMemory(); }
   }
-  function closeAll() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open')); }
+  function closeAll() { document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open')); }
 
   // ── SPIN WHEEL ──
-  const segments = [5,10,15,5,25,10,50,5,10,20,5,15];
-  const colors = ['#1e293b','#334155','#1e3a5f','#2d1b69','#1a1a2e','#134e5e','#c94b4b','#1e293b','#334155','#1e3a5f','#2d1b69','#134e5e'];
-  let spinning = false;
+  const segments=[5,10,15,5,25,10,50,5,10,20,5,15];
+  const colors=['#1e293b','#334155','#1e3a5f','#2d1b69','#1a1a2e','#134e5e','#c94b4b','#1e293b','#334155','#1e3a5f','#2d1b69','#134e5e'];
+  let spinning=false;
 
   function drawWheel(angle=0) {
-    const c = document.getElementById('wheelCanvas');
-    const ctx = c.getContext('2d');
-    const cx = 130, cy = 130, r = 120;
-    const arc = (2*Math.PI)/segments.length;
+    const c=document.getElementById('wheelCanvas');
+    const ctx=c.getContext('2d');
+    const cx=130,cy=130,r=120;
+    const arc=(2*Math.PI)/segments.length;
     ctx.clearRect(0,0,260,260);
-    segments.forEach((s,i) => {
-      const start = angle + i*arc, end = start+arc;
-      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end);
-      ctx.fillStyle = colors[i]; ctx.fill();
-      ctx.strokeStyle = '#0a0f1e'; ctx.lineWidth = 2; ctx.stroke();
-      ctx.save(); ctx.translate(cx,cy); ctx.rotate(start+arc/2);
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 13px Syne,sans-serif';
-      ctx.textAlign = 'right'; ctx.fillText(s+'pts', r-12, 5);
-      ctx.restore();
+    segments.forEach((s,i)=>{
+      const start=angle+i*arc,end=start+arc;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);
+      ctx.fillStyle=colors[i];ctx.fill();
+      ctx.strokeStyle='#0a0f1e';ctx.lineWidth=2;ctx.stroke();
+      ctx.save();ctx.translate(cx,cy);ctx.rotate(start+arc/2);
+      ctx.fillStyle='#fff';ctx.font='bold 13px Syne,sans-serif';
+      ctx.textAlign='right';ctx.fillText(s+'pts',r-12,5);ctx.restore();
     });
-    // pointer
-    ctx.beginPath(); ctx.moveTo(cx,cy-r-4); ctx.lineTo(cx-10,cy-r+16); ctx.lineTo(cx+10,cy-r+16);
-    ctx.fillStyle = '#f59e0b'; ctx.fill();
+    ctx.beginPath();ctx.moveTo(cx,cy-r-4);ctx.lineTo(cx-10,cy-r+16);ctx.lineTo(cx+10,cy-r+16);
+    ctx.fillStyle='#f59e0b';ctx.fill();
   }
 
   function spinWheel() {
     if (spinning) return;
-    spinning = true;
-    document.getElementById('spinBtn').disabled = true;
-    document.getElementById('spinResult').style.display = 'none';
-    const total = (Math.random()*10+5)*2*Math.PI;
-    const duration = 3000;
-    const start = performance.now();
-    let angle = 0;
-
+    spinning=true;
+    document.getElementById('spinBtn').disabled=true;
+    document.getElementById('spinResult').style.display='none';
+    const total=(Math.random()*10+5)*2*Math.PI;
+    const duration=3000;
+    const start=performance.now();
+    let angle=0;
     function animate(now) {
-      const t = Math.min((now-start)/duration,1);
-      const ease = 1-Math.pow(1-t,4);
-      angle = ease*total;
+      const t=Math.min((now-start)/duration,1);
+      const ease=1-Math.pow(1-t,4);
+      angle=ease*total;
       drawWheel(angle);
       if (t<1) return requestAnimationFrame(animate);
-      spinning = false;
-      const arc = (2*Math.PI)/segments.length;
-      const normalised = ((2*Math.PI) - (angle%(2*Math.PI))) % (2*Math.PI);
-      const idx = Math.floor(normalised/arc) % segments.length;
-      const won = segments[idx];
-      document.getElementById('spinPts').textContent = '+'+won;
-      document.getElementById('spinResult').style.display = 'block';
-      document.getElementById('spinBtn').disabled = false;
-      EZ.addPoints(won, 'Spin the Wheel 🎡');
-      
+      spinning=false;
+      const arc=(2*Math.PI)/segments.length;
+      const norm=((2*Math.PI)-(angle%(2*Math.PI)))%(2*Math.PI);
+      const idx=Math.floor(norm/arc)%segments.length;
+      const won=segments[idx];
+      document.getElementById('spinPts').textContent='+'+won;
+      document.getElementById('spinResult').style.display='block';
+      document.getElementById('spinBtn').disabled=false;
+      addPoints(won, 'Spin the Wheel 🎡');
     }
     requestAnimationFrame(animate);
   }
 
-  // ── SCRATCH CARD ──
-  let scratchPrize = 0, scratchCollected = false;
+  // ── SCRATCH ──
+  let scratchPrize=0,scratchCollected=false;
   function newScratch() {
-    scratchCollected = false;
-    const prizes = [5,5,10,10,15,20,25,50,75,100];
-    scratchPrize = prizes[Math.floor(Math.random()*prizes.length)];
-    document.getElementById('scratchReveal').textContent = '+'+scratchPrize+' pts';
-    document.getElementById('scratchStatus').textContent = 'Scratch to reveal...';
-    document.getElementById('newScratchBtn').style.display = 'none';
-
-    const c = document.getElementById('scratchCanvas');
-    const ctx = c.getContext('2d');
+    scratchCollected=false;
+    const prizes=[5,5,10,10,15,20,25,50,75,100];
+    scratchPrize=prizes[Math.floor(Math.random()*prizes.length)];
+    document.getElementById('scratchReveal').textContent='+'+scratchPrize+' pts';
+    document.getElementById('scratchStatus').textContent='Scratch to reveal...';
+    document.getElementById('newScratchBtn').style.display='none';
+    const c=document.getElementById('scratchCanvas');
+    const ctx=c.getContext('2d');
     ctx.clearRect(0,0,220,120);
-    const grad = ctx.createLinearGradient(0,0,220,120);
-    grad.addColorStop(0,'#475569'); grad.addColorStop(1,'#334155');
-    ctx.fillStyle = grad; ctx.fillRect(0,0,220,120);
-    ctx.fillStyle = '#94a3b8'; ctx.font = 'bold 18px Syne,sans-serif';
-    ctx.textAlign = 'center'; ctx.fillText('✦ Scratch Here ✦', 110, 65);
-
-    let isDrawing = false;
-    let scratched = 0;
-    c.onmousedown = c.ontouchstart = () => isDrawing = true;
-    c.onmouseup = c.ontouchend = () => isDrawing = false;
-    c.onmousemove = c.ontouchmove = (e) => {
-      if (!isDrawing || scratchCollected) return;
-      const rect = c.getBoundingClientRect();
-      const x = (e.clientX||e.touches[0].clientX)-rect.left;
-      const y = (e.clientY||e.touches[0].clientY)-rect.top;
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.beginPath(); ctx.arc(x,y,20,0,Math.PI*2); ctx.fill();
+    const grad=ctx.createLinearGradient(0,0,220,120);
+    grad.addColorStop(0,'#475569');grad.addColorStop(1,'#334155');
+    ctx.fillStyle=grad;ctx.fillRect(0,0,220,120);
+    ctx.fillStyle='#94a3b8';ctx.font='bold 18px Syne,sans-serif';
+    ctx.textAlign='center';ctx.fillText('✦ Scratch Here ✦',110,65);
+    let isDrawing=false,scratched=0;
+    c.onmousedown=c.ontouchstart=()=>isDrawing=true;
+    c.onmouseup=c.ontouchend=()=>isDrawing=false;
+    c.onmousemove=c.ontouchmove=(e)=>{
+      if (!isDrawing||scratchCollected) return;
+      const rect=c.getBoundingClientRect();
+      const x=(e.clientX||e.touches[0].clientX)-rect.left;
+      const y=(e.clientY||e.touches[0].clientY)-rect.top;
+      ctx.globalCompositeOperation='destination-out';
+      ctx.beginPath();ctx.arc(x,y,20,0,Math.PI*2);ctx.fill();
       scratched++;
-      if (scratched > 30 && !scratchCollected) {
-        scratchCollected = true;
-        document.getElementById('scratchStatus').textContent = `🎉 You won +${scratchPrize} pts!`;
-        document.getElementById('newScratchBtn').style.display = 'block';
-        EZ.addPoints(scratchPrize, 'Scratch Card 🎴');
-        
+      if (scratched>30&&!scratchCollected) {
+        scratchCollected=true;
+        document.getElementById('scratchStatus').textContent='🎉 You won +'+scratchPrize+' pts!';
+        document.getElementById('newScratchBtn').style.display='block';
+        addPoints(scratchPrize,'Scratch Card 🎴');
       }
     };
   }
 
   // ── QUIZ ──
-  const questions = [
-    { q:"What is the capital of Nepal?", opts:["Pokhara","Kathmandu","Lalitpur","Biratnagar"], ans:1 },
-    { q:"Which planet is closest to the Sun?", opts:["Venus","Earth","Mars","Mercury"], ans:3 },
-    { q:"How many sides does a hexagon have?", opts:["5","6","7","8"], ans:1 },
-    { q:"What is 15 × 15?", opts:["215","225","235","245"], ans:1 },
-    { q:"Which is the largest ocean?", opts:["Atlantic","Indian","Arctic","Pacific"], ans:3 },
-    { q:"What color do you get mixing red and blue?", opts:["Green","Purple","Orange","Brown"], ans:1 },
-    { q:"How many months have 31 days?", opts:["5","6","7","8"], ans:2 },
-    { q:"What is the square root of 144?", opts:["11","12","13","14"], ans:1 },
+  const questions=[
+    {q:"What is the capital of Nepal?",opts:["Pokhara","Kathmandu","Lalitpur","Biratnagar"],ans:1},
+    {q:"Which planet is closest to the Sun?",opts:["Venus","Earth","Mars","Mercury"],ans:3},
+    {q:"How many sides does a hexagon have?",opts:["5","6","7","8"],ans:1},
+    {q:"What is 15 × 15?",opts:["215","225","235","245"],ans:1},
+    {q:"Which is the largest ocean?",opts:["Atlantic","Indian","Arctic","Pacific"],ans:3},
+    {q:"What color mixing red and blue gives?",opts:["Green","Purple","Orange","Brown"],ans:1},
+    {q:"How many months have 31 days?",opts:["5","6","7","8"],ans:2},
+    {q:"Square root of 144?",opts:["11","12","13","14"],ans:1},
   ];
-  let qIdx=0, qScore=0, qTotal=5;
+  let qIdx=0,qScore=0,qTotal=5,quizPtsEarned=0;
 
   function startQuiz() {
-    qIdx=0; qScore=0; qTotal=5;
+    qIdx=0;qScore=0;quizPtsEarned=0;
     document.getElementById('quizResult').style.display='none';
     showQuestion();
   }
 
   function showQuestion() {
-    if(qIdx>=qTotal) { endQuiz(); return; }
-    const shuffled = questions.sort(()=>Math.random()-0.5);
-    const q = shuffled[qIdx];
-    document.getElementById('quizScore').textContent = `Question ${qIdx+1}/${qTotal} · Score: ${qScore} pts`;
-    document.getElementById('quizQ').textContent = q.q;
-    document.getElementById('quizOpts').innerHTML = q.opts.map((o,i)=>
+    if (qIdx>=qTotal) { endQuiz(); return; }
+    const shuffled=[...questions].sort(()=>Math.random()-0.5);
+    const q=shuffled[qIdx];
+    document.getElementById('quizScore').textContent=`Question ${qIdx+1}/${qTotal} · Score: ${qScore} pts`;
+    document.getElementById('quizQ').textContent=q.q;
+    document.getElementById('quizOpts').innerHTML=q.opts.map((o,i)=>
       `<div class="quiz-opt" onclick="answerQ(${i},${q.ans},this)">${o}</div>`
     ).join('');
   }
 
-  function answerQ(chosen, correct, el) {
+  function answerQ(chosen,correct,el) {
     document.querySelectorAll('.quiz-opt').forEach(o=>o.style.pointerEvents='none');
-    if(chosen===correct) {
+    if (chosen===correct) {
       el.classList.add('correct');
-      qScore+=5; EZ.addPoints(5, 'Quiz correct answer ❓');
+      qScore+=5; quizPtsEarned+=5;
+      addPoints(5,'Quiz correct answer ❓');
     } else {
       el.classList.add('wrong');
       document.querySelectorAll('.quiz-opt')[correct].classList.add('correct');
     }
     qIdx++;
-    setTimeout(showQuestion, 1000);
+    setTimeout(showQuestion,1000);
   }
 
   function endQuiz() {
     document.getElementById('quizResult').style.display='block';
-    document.getElementById('quizFinalPts').textContent = '+'+qScore;
-    
+    document.getElementById('quizFinalPts').textContent='+'+qScore;
   }
 
   // ── MEMORY ──
-  const emojis = ['🎯','🎮','🏆','💰','⭐','🎁','🔥','💎'];
-  let memCards=[], memFlipped=[], memMatched=0, memPts=0, memLock=false;
+  const emojis=['🎯','🎮','🏆','💰','⭐','🎁','🔥','💎'];
+  let memCards=[],memFlipped=[],memMatched=0,memPts=0,memLock=false;
 
   function startMemory() {
-    memMatched=0; memPts=0; memFlipped=[]; memLock=false;
+    memMatched=0;memPts=0;memFlipped=[];memLock=false;
     document.getElementById('memResult').style.display='none';
     document.getElementById('memScore').textContent='Matches: 0/8 · Points: 0';
-    const deck = [...emojis,...emojis].sort(()=>Math.random()-0.5);
-    memCards = deck;
-    document.getElementById('memoryGrid').innerHTML = deck.map((e,i)=>
+    const deck=[...emojis,...emojis].sort(()=>Math.random()-0.5);
+    memCards=deck;
+    document.getElementById('memoryGrid').innerHTML=deck.map((e,i)=>
       `<div class="mem-card" id="mc${i}" onclick="flipCard(${i})"></div>`
     ).join('');
   }
 
   function flipCard(i) {
-    if(memLock || memFlipped.includes(i) || document.getElementById('mc'+i).classList.contains('matched')) return;
-    const card = document.getElementById('mc'+i);
-    card.textContent = memCards[i];
-    card.classList.add('flipped');
+    if (memLock||memFlipped.includes(i)||document.getElementById('mc'+i).classList.contains('matched')) return;
+    const card=document.getElementById('mc'+i);
+    card.textContent=memCards[i];card.classList.add('flipped');
     memFlipped.push(i);
-    if(memFlipped.length===2) {
+    if (memFlipped.length===2) {
       memLock=true;
-      const [a,b] = memFlipped;
-      if(memCards[a]===memCards[b]) {
+      const [a,b]=memFlipped;
+      if (memCards[a]===memCards[b]) {
         document.getElementById('mc'+a).classList.add('matched');
         document.getElementById('mc'+b).classList.add('matched');
-        memMatched++; memPts+=5;
-        EZ.addPoints(5,'Memory Match 🃏');
+        memMatched++;memPts+=5;
+        addPoints(5,'Memory Match 🃏');
         document.getElementById('memScore').textContent=`Matches: ${memMatched}/8 · Points: ${memPts}`;
-        memFlipped=[]; memLock=false;
-        if(memMatched===8) {
+        memFlipped=[];memLock=false;
+        if (memMatched===8) {
           document.getElementById('memResult').style.display='block';
           document.getElementById('memFinalPts').textContent='+'+memPts;
-          
         }
       } else {
         setTimeout(()=>{
@@ -464,54 +401,11 @@
           document.getElementById('mc'+b).textContent='';
           document.getElementById('mc'+a).classList.remove('flipped');
           document.getElementById('mc'+b).classList.remove('flipped');
-          memFlipped=[]; memLock=false;
+          memFlipped=[];memLock=false;
         },900);
       }
     }
   }
 </script>
-
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script>
-    if (!firebase.apps.length) {
-      firebase.initializeApp({
-        apiKey: "AIzaSyB94zgBIclBjVTgiuR_ceRuCoQtx555Qk8",
-        authDomain: "earnzone-51a4f.firebaseapp.com",
-        projectId: "earnzone-51a4f",
-        storageBucket: "earnzone-51a4f.firebasestorage.app",
-        messagingSenderId: "263039604264",
-        appId: "1:263039604264:web:845b2389b49e572209071d"
-      });
-    }
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    
-    // Check login
-    auth.onAuthStateChanged(user => {
-      if (!user) window.location.href = 'login.html';
-    });
-
-    // Points system using Firebase
-    const EZ = {
-      addPoints: async function(amount, reason) {
-        const user = auth.currentUser;
-        if (!user) return;
-        await db.collection('users').doc(user.uid).update({
-          points: firebase.firestore.FieldValue.increment(amount),
-          history: firebase.firestore.FieldValue.arrayUnion({ amount, reason, date: new Date().toISOString() })
-        });
-        this.showToast('+' + amount + ' pts — ' + reason + ' 🎉');
-      },
-      showToast: function(msg) {
-        let t = document.getElementById('toast');
-        if (!t) { t = document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); }
-        t.textContent = msg; t.style.display = 'block';
-        setTimeout(()=>t.style.display='none', 3000);
-      },
-      updateUI: function() {}
-    };
-  </script>
 </body>
 </html>
