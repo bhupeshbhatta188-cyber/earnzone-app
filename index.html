@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EarnZone — Watch. Play. Earn.</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta property="og:title" content="EarnZone — Watch. Play. Earn Real Money." />
+  <meta property="og:description" content="Earn real money watching videos and playing games. Redeem via eSewa, Khalti or PayPal!" />
+  <meta property="og:image" content="og-image.svg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">Earn<span>Zone</span></div>
+    <ul class="nav-links">
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#earn">Earn</a></li>
+      <li><a href="#redeem">Redeem</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="pts-pill" id="navPts" style="display:none;">
+        🪙 <span id="navPtsVal">0</span> pts
+      </div>
+      <a href="pages/login.html" class="btn btn-outline" id="loginBtn">Login</a>
+      <a href="pages/dashboard.html" class="btn btn-gold" id="dashBtn" style="display:none;">Dashboard</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">🎯 Nepal's #1 Earning Platform</div>
+    <h1>Watch. Play. <span class="highlight">Earn Real Money.</span></h1>
+    <p>Earn points by watching videos and playing games. Redeem instantly via eSewa, Khalti, or PayPal.</p>
+    <div class="hero-btns">
+      <a href="pages/login.html" class="btn btn-gold">Start Earning Free →</a>
+      <a href="#how" class="btn btn-outline">How it works</a>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="statUsers">0</div>
+      <div class="stat-label">Active Users</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="statPaid">0</div>
+      <div class="stat-label">Total Paid Out</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Free to Join</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">24h</div>
+      <div class="stat-label">Fast Payout</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how">
+    <div class="section-tag">Simple Process</div>
+    <h2 class="section-title">How EarnZone Works</h2>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon">👤</div>
+        <div class="step-title">Sign Up Free</div>
+        <div class="step-desc">Create your account in 30 seconds. No credit card. No investment. 100% free.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon">▶️</div>
+        <div class="step-title">Watch Videos</div>
+        <div class="step-desc">Watch short videos from our library and earn points automatically after each one.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon">🎮</div>
+        <div class="step-title">Play Games</div>
+        <div class="step-desc">Play fun mini games like spin wheel, scratch cards, and quizzes to earn extra points.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-icon">💸</div>
+        <div class="step-title">Get Paid</div>
+        <div class="step-desc">Redeem your points for cash via eSewa, Khalti, or PayPal within 24 hours.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EARN SECTION -->
+  <section class="section" id="earn" style="padding-top:0;">
+    <div class="section-tag">Ways to Earn</div>
+    <h2 class="section-title">Multiple Ways to Earn Points</h2>
+    <div class="earn-grid">
+      <a href="pages/videos.html" class="earn-card">
+        <div class="earn-card-thumb vid-bg">
+          🎬
+          <div class="earn-pts-badge">+10 pts/video</div>
+        </div>
+        <div class="earn-card-body">
+          <div class="earn-card-title">Watch Videos</div>
+          <div class="earn-card-desc">Watch trending videos, tutorials, and entertainment clips. Earn 10–25 points per video watched.</div>
+          <div class="earn-card-link">Start watching →</div>
+        </div>
+      </a>
+      <a href="pages/games.html" class="earn-card">
+        <div class="earn-card-thumb game-bg">
+          🎮
+          <div class="earn-pts-badge">+5 pts/game</div>
+        </div>
+        <div class="earn-card-body">
+          <div class="earn-card-title">Play Games</div>
+          <div class="earn-card-desc">Play spin wheel, scratch cards, quizzes and more. Win bonus points on special rounds.</div>
+          <div class="earn-card-link">Play now →</div>
+        </div>
+      </a>
+      <a href="pages/dashboard.html" class="earn-card">
+        <div class="earn-card-thumb task-bg">
+          👥
+          <div class="earn-pts-badge">+50 pts/invite</div>
+        </div>
+        <div class="earn-card-body">
+          <div class="earn-card-title">Invite Friends</div>
+          <div class="earn-card-desc">Earn 50 bonus points for every friend you invite. No limit — the more you share, the more you earn.</div>
+          <div class="earn-card-link">Invite now →</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- REDEEM SECTION -->
+  <section class="section" id="redeem" style="padding-top:0;">
+    <div class="section-tag">Cash Out</div>
+    <h2 class="section-title">Redeem Your Points</h2>
+    <p style="color:var(--muted);margin-bottom:32px;font-size:15px;">1000 points = ₹10 · Minimum withdrawal: 1000 points · Paid within 24 hours</p>
+    <div class="redeem-grid">
+      <div class="redeem-card">
+        <div class="redeem-icon">📱</div>
+        <div class="redeem-name">eSewa</div>
+        <div class="redeem-pts">1000 pts = ₹10</div>
+      </div>
+      <div class="redeem-card">
+        <div class="redeem-icon">💳</div>
+        <div class="redeem-name">Khalti</div>
+        <div class="redeem-pts">1000 pts = ₹10</div>
+      </div>
+      <div class="redeem-card">
+        <div class="redeem-icon">🌐</div>
+        <div class="redeem-name">PayPal</div>
+        <div class="redeem-pts">2000 pts = $1</div>
+      </div>
+      <div class="redeem-card">
+        <div class="redeem-icon">🎁</div>
+        <div class="redeem-name">Gift Card</div>
+        <div class="redeem-pts">2000 pts = ₹20</div>
+      </div>
+      <div class="redeem-card">
+        <div class="redeem-icon">🏦</div>
+        <div class="redeem-name">Bank Transfer</div>
+        <div class="redeem-pts">5000 pts = ₹50</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Earn<span>Zone</span></div>
+    <ul class="footer-links">
+      <li><a href="#">About</a></li>
+      <li><a href="#">Terms</a></li>
+      <li><a href="#">Privacy</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">FAQ</a></li>
+    </ul>
+    <div class="footer-copy">© 2025 EarnZone. All rights reserved.</div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/points.js"></script>
+  <script>
+    // Animate stats counter
+    function animateCount(el, target, suffix='') {
+      let current = 0;
+      const step = Math.ceil(target / 60);
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current.toLocaleString() + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 30);
+    }
+
+    window.addEventListener('load', () => {
+      animateCount(document.getElementById('statUsers'), 24000, '+');
+      animateCount(document.getElementById('statPaid'), 500000, '₹');
+    });
+
+    // Show user points in navbar if logged in
+    const user = JSON.parse(localStorage.getItem('ez_user') || 'null');
+    if (user) {
+      document.getElementById('navPts').style.display = 'flex';
+      document.getElementById('navPtsVal').textContent = user.points || 0;
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('dashBtn').style.display = 'inline-block';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EarnZone — Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <meta property="og:title" content="EarnZone — Watch. Play. Earn Real Money." />
+  <meta property="og:description" content="Earn real money watching videos and playing games. Redeem via eSewa, Khalti or PayPal!" />
+  <meta property="og:image" content="../og-image.svg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page { padding-top: 80px; }
+    .dash-header { background: linear-gradient(135deg, var(--dark2), var(--dark3)); border-bottom: 1px solid var(--border); padding: 32px 24px; }
+    .dash-welcome { font-size: 13px; color: var(--muted); }
+    .dash-name { font-size: 24px; font-weight: 700; font-family: 'Syne', sans-serif; }
+    .dash-pts-big { font-size: 48px; font-weight: 700; color: var(--gold); font-family: 'Syne', sans-serif; margin: 8px 0 4px; }
+    .dash-pts-label { font-size: 14px; color: var(--muted); }
+    .progress-wrap { margin-top: 20px; }
+    .progress-top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+    .progress-bar { height: 8px; background: var(--dark3); border-radius: 999px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--gold); border-radius: 999px; transition: width 0.5s ease; }
+    .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 24px; max-width: 1100px; margin: 0 auto; }
+    .card { background: var(--dark2); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+    .card-title { font-size: 15px; font-weight: 600; font-family: 'Syne', sans-serif; margin-bottom: 16px; }
+    .earn-btns { display: flex; flex-direction: column; gap: 10px; }
+    .earn-btn { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-radius: 12px; cursor: pointer; text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; background: var(--dark3); }
+    .earn-btn:hover { border-color: var(--gold); transform: translateX(4px); }
+    .earn-btn-left { display: flex; align-items: center; gap: 12px; }
+    .earn-btn-icon { font-size: 24px; }
+    .earn-btn-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .earn-btn-desc { font-size: 12px; color: var(--muted); }
+    .earn-btn-pts { font-size: 13px; color: var(--gold); font-weight: 600; }
+    .redeem-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .redeem-opt { border: 1px solid var(--border); border-radius: 12px; padding: 14px 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .redeem-opt:hover { border-color: var(--gold); }
+    .redeem-opt-icon { font-size: 24px; margin-bottom: 6px; }
+    .redeem-opt-name { font-size: 13px; font-weight: 500; }
+    .redeem-opt-pts { font-size: 11px; color: var(--gold); }
+    .history-list { display: flex; flex-direction: column; gap: 10px; }
+    .hist-item { display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .hist-reason { font-size: 13px; color: var(--text); }
+    .hist-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .hist-pts { font-size: 14px; font-weight: 600; color: var(--success); }
+    .ref-box { background: var(--dark3); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .ref-code { font-size: 18px; font-weight: 700; font-family: 'Syne', sans-serif; color: var(--gold); letter-spacing: 2px; }
+    .copy-btn { padding: 8px 16px; background: var(--gold); color: var(--dark); border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    .ref-hint { font-size: 12px; color: var(--muted); margin-top: 10px; }
+    .logout-btn { display: block; margin: 0 24px 40px; padding: 12px; background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 10px; cursor: pointer; font-size: 14px; font-family: 'DM Sans', sans-serif; text-align: center; transition: all 0.2s; max-width: 200px; }
+    .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+    .loading { text-align: center; padding: 40px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo"><a href="../index.html" style="color:inherit;text-decoration:none;">Earn<span>Zone</span></a></div>
+    <ul class="nav-links">
+      <li><a href="videos.html">Watch</a></li>
+      <li><a href="games.html">Play</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="pts-pill">🪙 <span id="navPts">0</span> pts</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="dash-header">
+      <div class="dash-welcome">Welcome back,</div>
+      <div class="dash-name" id="dashName">Loading...</div>
+      <div class="dash-pts-big" id="dashPts">0</div>
+      <div class="dash-pts-label">Total Points</div>
+      <div class="progress-wrap">
+        <div class="progress-top"><span>Daily goal</span><span id="progPct">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="card">
+        <div class="card-title">⚡ Earn More Points</div>
+        <div class="earn-btns">
+          <a href="videos.html" class="earn-btn">
+            <div class="earn-btn-left"><div class="earn-btn-icon">🎬</div><div><div class="earn-btn-name">Watch Videos</div><div class="earn-btn-desc">10–25 pts per video</div></div></div>
+            <div class="earn-btn-pts">Earn →</div>
+          </a>
+          <a href="games.html" class="earn-btn">
+            <div class="earn-btn-left"><div class="earn-btn-icon">🎮</div><div><div class="earn-btn-name">Play Games</div><div class="earn-btn-desc">5–15 pts per game</div></div></div>
+            <div class="earn-btn-pts">Play →</div>
+          </a>
+          <div class="earn-btn" onclick="shareRef()">
+            <div class="earn-btn-left"><div class="earn-btn-icon">👥</div><div><div class="earn-btn-name">Invite Friends</div><div class="earn-btn-desc">+50 pts per referral</div></div></div>
+            <div class="earn-btn-pts">Share →</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💸 Redeem Points</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">1000 pts = ₹10 · Min 1000 pts</p>
+        <div class="redeem-opts">
+          <div class="redeem-opt" onclick="redeem('eSewa', 1000)"><div class="redeem-opt-icon">📱</div><div class="redeem-opt-name">eSewa</div><div class="redeem-opt-pts">1000 pts</div></div>
+          <div class="redeem-opt" onclick="redeem('Khalti', 1000)"><div class="redeem-opt-icon">💳</div><div class="redeem-opt-name">Khalti</div><div class="redeem-opt-pts">1000 pts</div></div>
+          <div class="redeem-opt" onclick="redeem('PayPal', 2000)"><div class="redeem-opt-icon">🌐</div><div class="redeem-opt-name">PayPal</div><div class="redeem-opt-pts">2000 pts</div></div>
+          <div class="redeem-opt" onclick="redeem('Gift Card', 2000)"><div class="redeem-opt-icon">🎁</div><div class="redeem-opt-name">Gift Card</div><div class="redeem-opt-pts">2000 pts</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔗 Your Referral Code</div>
+        <div class="ref-box">
+          <div class="ref-code" id="refCode">LOADING</div>
+          <button class="copy-btn" onclick="copyRef()">Copy</button>
+        </div>
+        <div class="ref-hint">Share this code — you both get +50 bonus points!</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Points History</div>
+        <div class="history-list" id="historyList"><div style="color:var(--muted);font-size:13px;">Loading...</div></div>
+      </div>
+    </div>
+
+    <button class="logout-btn" onclick="doLogout()">Logout</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { auth, db, onAuthStateChanged, ezLogout, ezRedeem, showToast } from '../js/firebase.js';
+    import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    onAuthStateChanged(auth, user => {
+      if (!user) { window.location.href = 'login.html'; return; }
+      // Live realtime listener
+      onSnapshot(doc(db, 'users', user.uid), snap => {
+        if (!snap.exists()) return;
+        const u = snap.data();
+        document.getElementById('dashName').textContent = u.name;
+        document.getElementById('dashPts').textContent = (u.points || 0).toLocaleString();
+        document.getElementById('navPts').textContent = (u.points || 0).toLocaleString();
+        document.getElementById('refCode').textContent = u.referralCode || '—';
+        const pct = Math.min(Math.round(((u.points||0)/1000)*100), 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progPct').textContent = pct + '%';
+        const hist = u.history || [];
+        const histEl = document.getElementById('historyList');
+        histEl.innerHTML = hist.length === 0
+          ? '<div style="color:var(--muted);font-size:13px;">No activity yet!</div>'
+          : hist.slice(0,8).map(h => `
+            <div class="hist-item">
+              <div><div class="hist-reason">${h.reason}</div><div class="hist-date">${new Date(h.date).toLocaleDateString()}</div></div>
+              <div class="hist-pts" style="color:${h.amount<0?'var(--danger)':'var(--success)'};">${h.amount>0?'+':''}${h.amount}</div>
+            </div>`).join('');
+      });
+    });
+
+    window.redeem = async function(method, required) {
+      const result = await ezRedeem(method, required);
+      if (result) showToast(`Redemption via ${method} requested! Processing in 24h.`);
+    };
+
+    window.copyRef = function() {
+      const code = document.getElementById('refCode').textContent;
+      navigator.clipboard.writeText(`Join EarnZone & earn free money! Use my code: ${code} → earnzone.vercel.app`);
+      showToast('Referral link copied! 🔗');
+    };
+
+    window.shareRef = window.copyRef;
+    window.doLogout = ezLogout;
+  </script>
+</body>
+</html>

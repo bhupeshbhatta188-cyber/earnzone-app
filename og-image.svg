@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0a0f1e"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#grad)"/>
+  <defs>
+    <radialGradient id="grad" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#0a0f1e"/>
+    </radialGradient>
+  </defs>
+  <text x="600" y="260" font-family="Arial Black" font-size="100" font-weight="900" fill="#f59e0b" text-anchor="middle">EarnZone</text>
+  <text x="600" y="350" font-family="Arial, sans-serif" font-size="40" fill="#94a3b8" text-anchor="middle">Watch. Play. Earn Real Money. 🎯</text>
+  <text x="600" y="450" font-family="Arial, sans-serif" font-size="30" fill="#f59e0b" text-anchor="middle">100% Free · eSewa · Khalti · PayPal</text>
+</svg>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EarnZone — Watch & Earn</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <meta property="og:title" content="EarnZone — Watch. Play. Earn Real Money." />
+  <meta property="og:description" content="Earn real money watching videos and playing games. Redeem via eSewa, Khalti or PayPal!" />
+  <meta property="og:image" content="../og-image.svg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .page { padding-top: 80px; }
+    .page-header { padding: 32px 24px 0; max-width: 1100px; margin: 0 auto; }
+    .page-title { font-size: 28px; font-weight: 700; font-family: 'Syne', sans-serif; }
+    .page-sub { color: var(--muted); font-size: 14px; margin-top: 6px; }
+
+    .filter-bar {
+      display: flex; gap: 8px; padding: 20px 24px;
+      max-width: 1100px; margin: 0 auto;
+      overflow-x: auto; padding-bottom: 8px;
+    }
+    .filter-btn {
+      padding: 7px 18px; border-radius: 999px; font-size: 13px;
+      border: 1px solid var(--border); background: var(--dark2);
+      color: var(--muted); cursor: pointer; white-space: nowrap;
+      transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+    }
+    .filter-btn.active { background: var(--gold); color: var(--dark); border-color: var(--gold); font-weight: 500; }
+
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px; padding: 0 24px 40px;
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    .video-card {
+      background: var(--dark2); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden; cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .video-card:hover { transform: translateY(-4px); border-color: rgba(245,158,11,0.3); }
+
+    .video-thumb {
+      position: relative; padding-top: 56.25%; /* 16:9 */
+      overflow: hidden;
+    }
+    .video-thumb iframe {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; border: none; pointer-events: none;
+    }
+    .video-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.3);
+      transition: background 0.2s;
+    }
+    .video-card:hover .video-overlay { background: rgba(0,0,0,0.1); }
+    .play-btn {
+      width: 52px; height: 52px; background: rgba(245,158,11,0.9);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; transition: transform 0.2s;
+    }
+    .video-card:hover .play-btn { transform: scale(1.1); }
+    .pts-badge {
+      position: absolute; top: 10px; right: 10px;
+      background: var(--gold); color: var(--dark);
+      font-size: 11px; font-weight: 600; padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .watched-badge {
+      position: absolute; top: 10px; left: 10px;
+      background: var(--success); color: #fff;
+      font-size: 11px; font-weight: 500; padding: 4px 10px;
+      border-radius: 999px; display: none;
+    }
+
+    .video-info { padding: 14px 16px; }
+    .video-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; line-height: 1.4; }
+    .video-meta { display: flex; align-items: center; justify-content: space-between; }
+    .video-cat { font-size: 12px; color: var(--muted); }
+    .video-earn { font-size: 12px; color: var(--gold); font-weight: 500; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      z-index: 200; display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--dark2); border: 1px solid var(--border);
+      border-radius: 20px; width: 100%; max-width: 700px;
+      overflow: hidden; animation: fadeUp 0.3s ease;
+    }
+    .modal-video { position: relative; padding-top: 56.25%; }
+    .modal-video iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    .modal-body { padding: 20px 24px; }
+    .modal-title { font-size: 18px; font-weight: 600; font-family: 'Syne', sans-serif; margin-bottom: 16px; }
+    .modal-footer { display: flex; align-items: center; justify-content: space-between; }
+    .timer-bar { flex: 1; height: 6px; background: var(--dark3); border-radius: 999px; overflow: hidden; margin-right: 16px; }
+    .timer-fill { height: 100%; background: var(--gold); border-radius: 999px; width: 0%; transition: width 0.5s linear; }
+    .collect-btn {
+      padding: 10px 20px; background: var(--dark3); color: var(--muted);
+      border: 1px solid var(--border); border-radius: 10px; font-size: 14px;
+      font-weight: 500; cursor: not-allowed; font-family: 'DM Sans', sans-serif;
+      transition: all 0.3s;
+    }
+    .collect-btn.ready {
+      background: var(--gold); color: var(--dark);
+      border-color: var(--gold); cursor: pointer;
+    }
+    .close-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(0,0,0,0.6); color: #fff; border: none;
+      width: 32px; height: 32px; border-radius: 50%;
+      font-size: 16px; cursor: pointer; z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo"><a href="../index.html" style="color:inherit;text-decoration:none;">Earn<span>Zone</span></a></div>
+    <ul class="nav-links">
+      <li><a href="videos.html" style="color:var(--gold);">Watch</a></li>
+      <li><a href="games.html">Play</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="pts-pill">🪙 <span class="ez-pts">0</span> pts</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <div class="page-title">🎬 Watch & Earn</div>
+      <div class="page-sub">Watch videos to earn points. Each video = real points!</div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterVideos('all', this)">All</button>
+      <button class="filter-btn" onclick="filterVideos('entertainment', this)">Entertainment</button>
+      <button class="filter-btn" onclick="filterVideos('tech', this)">Tech</button>
+      <button class="filter-btn" onclick="filterVideos('travel', this)">Travel</button>
+      <button class="filter-btn" onclick="filterVideos('food', this)">Food</button>
+      <button class="filter-btn" onclick="filterVideos('music', this)">Music</button>
+    </div>
+
+    <div class="videos-grid" id="videosGrid"></div>
+  </div>
+
+  <!-- VIDEO MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" style="position:relative;">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-video">
+        <iframe id="modalIframe" src="" allowfullscreen allow="autoplay"></iframe>
+      </div>
+      <div class="modal-body">
+        <div class="modal-title" id="modalTitle">—</div>
+        <div class="modal-footer">
+          <div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:6px;" id="timerLabel">Watch to earn points...</div>
+            <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+          </div>
+          <button class="collect-btn" id="collectBtn" onclick="collectPoints()">Collecting...</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="../js/points.js"></script>
+  <script>
+    if (!EZ.getUser()) window.location.href = 'login.html';
+    EZ.updateUI();
+
+    const videos = [
+      { id: 'dQw4w9WgXcQ', title: 'Top Funny Moments 2024', cat: 'entertainment', pts: 10, duration: 15 },
+      { id: 'jNQXAC9IVRw', title: 'First YouTube Video Ever', cat: 'entertainment', pts: 10, duration: 15 },
+      { id: 'kJQP7kiw5Fk', title: 'Epic Travel Destinations', cat: 'travel', pts: 15, duration: 20 },
+      { id: '9bZkp7q19f0', title: 'Future of Technology', cat: 'tech', pts: 15, duration: 20 },
+      { id: 'OPf0YbXqDm0', title: 'World Street Food Tour', cat: 'food', pts: 20, duration: 25 },
+      { id: 'JGwWNGJdvx8', title: 'Relaxing Music Mix', cat: 'music', pts: 10, duration: 15 },
+      { id: 'hT_nvWreIhg', title: 'AI & Machine Learning Explained', cat: 'tech', pts: 25, duration: 30 },
+      { id: 'ZZ5LpwO-An4', title: 'Beautiful Nepal Travel Guide', cat: 'travel', pts: 20, duration: 25 },
+      { id: 'pRpeEdMmmQ0', title: 'Best Street Food in Asia', cat: 'food', pts: 15, duration: 20 },
+      { id: 'YR5ApYxkU-U', title: 'Chill Lo-fi Beats', cat: 'music', pts: 10, duration: 15 },
+      { id: 'eTIXfBL_h6o', title: 'Smartphone Tips & Tricks', cat: 'tech', pts: 15, duration: 20 },
+      { id: 'fJ9rUzIMcZQ', title: 'Comedy Skits Compilation', cat: 'entertainment', pts: 10, duration: 15 },
+    ];
+
+    const watched = JSON.parse(localStorage.getItem('ez_watched') || '[]');
+
+    function renderVideos(filter) {
+      const grid = document.getElementById('videosGrid');
+      const filtered = filter === 'all' ? videos : videos.filter(v => v.cat === filter);
+      grid.innerHTML = filtered.map((v, i) => {
+        const isWatched = watched.includes(v.id);
+        return `
+          <div class="video-card" onclick="openVideo(${videos.indexOf(v)})">
+            <div class="video-thumb">
+              <iframe src="https://www.youtube.com/embed/${v.id}?mute=1&controls=0&rel=0" loading="lazy"></iframe>
+              <div class="video-overlay">
+                <div class="play-btn">▶</div>
+              </div>
+              <div class="pts-badge">+${v.pts} pts</div>
+              <div class="watched-badge" style="display:${isWatched?'block':'none'}">✓ Watched</div>
+            </div>
+            <div class="video-info">
+              <div class="video-title">${v.title}</div>
+              <div class="video-meta">
+                <span class="video-cat">${v.cat.charAt(0).toUpperCase()+v.cat.slice(1)}</span>
+                <span class="video-earn">${isWatched ? '✓ Earned' : `Earn ${v.pts} pts`}</span>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function filterVideos(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderVideos(cat);
+    }
+
+    let currentVideo = null, timerInterval = null;
+
+    function openVideo(idx) {
+      currentVideo = videos[idx];
+      document.getElementById('modalIframe').src = `https://www.youtube.com/embed/${currentVideo.id}?autoplay=1&rel=0`;
+      document.getElementById('modalTitle').textContent = currentVideo.title;
+      document.getElementById('modalOverlay').classList.add('open');
+      document.getElementById('collectBtn').className = 'collect-btn';
+      document.getElementById('collectBtn').textContent = 'Collecting...';
+      document.getElementById('timerFill').style.width = '0%';
+
+      let elapsed = 0;
+      const total = currentVideo.duration;
+      document.getElementById('timerLabel').textContent = `Watch ${total}s to earn +${currentVideo.pts} pts`;
+
+      timerInterval = setInterval(() => {
+        elapsed++;
+        const pct = (elapsed / total) * 100;
+        document.getElementById('timerFill').style.width = pct + '%';
+        document.getElementById('timerLabel').textContent = `${total - elapsed}s remaining...`;
+        if (elapsed >= total) {
+          clearInterval(timerInterval);
+          document.getElementById('timerLabel').textContent = `Ready to collect +${currentVideo.pts} pts!`;
+          document.getElementById('collectBtn').className = 'collect-btn ready';
+          document.getElementById('collectBtn').textContent = `Collect +${currentVideo.pts} pts 🎉`;
+        }
+      }, 1000);
+    }
+
+    function collectPoints() {
+      if (!document.getElementById('collectBtn').classList.contains('ready')) return;
+      EZ.addPoints(currentVideo.pts, `Watched: ${currentVideo.title}`);
+      if (!watched.includes(currentVideo.id)) {
+        watched.push(currentVideo.id);
+        localStorage.setItem('ez_watched', JSON.stringify(watched));
+      }
+      closeModal();
+      renderVideos('all');
+      document.querySelector('.filter-btn.active').click();
+    }
+
+    function closeModal() {
+      clearInterval(timerInterval);
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.getElementById('modalIframe').src = '';
+    }
+
+    renderVideos('all');
+  </script>
+</body>
+</html>
