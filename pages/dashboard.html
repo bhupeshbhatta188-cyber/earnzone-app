@@ -11,7 +11,6 @@
     .dash-welcome{font-size:13px;color:var(--muted)}
     .dash-name{font-size:24px;font-weight:700;font-family:'Syne',sans-serif}
     .dash-pts-big{font-size:48px;font-weight:700;color:var(--gold);font-family:'Syne',sans-serif;margin:8px 0 4px}
-    .dash-pts-label{font-size:14px;color:var(--muted)}
     .progress-wrap{margin-top:20px}
     .progress-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
     .progress-bar{height:8px;background:var(--dark3);border-radius:999px;overflow:hidden}
@@ -35,13 +34,10 @@
     .redeem-opt-pts{font-size:11px;color:var(--gold)}
     .history-list{display:flex;flex-direction:column;gap:10px}
     .hist-item{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--border)}
-    .hist-reason{font-size:13px;color:var(--text)}
-    .hist-date{font-size:11px;color:var(--muted);margin-top:2px}
     .ref-box{background:var(--dark3);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
     .ref-code{font-size:18px;font-weight:700;font-family:'Syne',sans-serif;color:var(--gold);letter-spacing:2px}
-    .copy-btn{padding:8px 16px;background:var(--gold);color:var(--dark);border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
-    .ref-hint{font-size:12px;color:var(--muted);margin-top:10px}
-    .logout-btn{display:block;margin:0 24px 40px;padding:12px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;cursor:pointer;font-size:14px;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;max-width:200px}
+    .copy-btn{padding:8px 16px;background:var(--gold);color:var(--dark);border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer}
+    .logout-btn{display:block;margin:0 24px 40px;padding:12px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:10px;cursor:pointer;font-size:14px;text-align:center;transition:all 0.2s;max-width:200px}
     .logout-btn:hover{border-color:var(--danger);color:var(--danger)}
   </style>
 </head>
@@ -60,9 +56,9 @@
   <div class="page">
     <div class="dash-header">
       <div class="dash-welcome">Welcome back,</div>
-      <div class="dash-name" id="dashName">Loading...</div>
+      <div class="dash-name" id="dashName">—</div>
       <div class="dash-pts-big" id="dashPts">0</div>
-      <div class="dash-pts-label">Total Points</div>
+      <div style="font-size:14px;color:var(--muted);">Total Points</div>
       <div class="progress-wrap">
         <div class="progress-top"><span>Daily goal</span><span id="progPct">0%</span></div>
         <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
@@ -80,7 +76,7 @@
             <div class="earn-btn-left"><div class="earn-btn-icon">🎮</div><div><div class="earn-btn-name">Play Games</div><div class="earn-btn-desc">5–15 pts per game</div></div></div>
             <div class="earn-btn-pts">Play →</div>
           </a>
-          <div class="earn-btn" onclick="shareRef()">
+          <div class="earn-btn" onclick="copyRef()">
             <div class="earn-btn-left"><div class="earn-btn-icon">👥</div><div><div class="earn-btn-name">Invite Friends</div><div class="earn-btn-desc">+50 pts per referral</div></div></div>
             <div class="earn-btn-pts">Share →</div>
           </div>
@@ -99,14 +95,14 @@
       <div class="card">
         <div class="card-title">🔗 Your Referral Code</div>
         <div class="ref-box">
-          <div class="ref-code" id="refCode">LOADING</div>
+          <div class="ref-code" id="refCode">—</div>
           <button class="copy-btn" onclick="copyRef()">Copy</button>
         </div>
-        <div class="ref-hint">Share this code — you both get +50 bonus points!</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:10px;">Share — you both get +50 bonus points!</div>
       </div>
       <div class="card">
         <div class="card-title">📋 Points History</div>
-        <div class="history-list" id="historyList"><div style="color:var(--muted);font-size:13px;">Loading...</div></div>
+        <div class="history-list" id="historyList"><div style="color:var(--muted);font-size:13px;">No activity yet!</div></div>
       </div>
     </div>
     <button class="logout-btn" onclick="doLogout()">Logout</button>
@@ -135,42 +131,70 @@
       setTimeout(()=>t.style.display='none', 3000);
     }
 
-    auth.onAuthStateChanged(user => {
+    function updateUI(pts, name, refCode, history) {
+      document.getElementById('dashName').textContent = name || 'User';
+      document.getElementById('dashPts').textContent = (pts||0).toLocaleString();
+      document.getElementById('navPts').textContent = (pts||0).toLocaleString();
+      document.getElementById('refCode').textContent = refCode || '—';
+      const pct = Math.min(Math.round(((pts||0)/1000)*100),100);
+      document.getElementById('progressFill').style.width = pct+'%';
+      document.getElementById('progPct').textContent = pct+'%';
+      const hist = history || [];
+      document.getElementById('historyList').innerHTML = hist.length===0
+        ? '<div style="color:var(--muted);font-size:13px;">No activity yet!</div>'
+        : hist.slice(0,8).map(h=>`
+          <div class="hist-item">
+            <div><div style="font-size:13px;">${h.reason}</div><div style="font-size:11px;color:var(--muted);">${new Date(h.date).toLocaleDateString()}</div></div>
+            <div style="font-size:14px;font-weight:600;color:${h.amount<0?'var(--danger)':'var(--success)'};">${h.amount>0?'+':''}${h.amount}</div>
+          </div>`).join('');
+    }
+
+    auth.onAuthStateChanged(async user => {
       if (!user) { window.location.href = 'login.html'; return; }
-      db.collection('users').doc(user.uid).onSnapshot(snap => {
-        if (!snap.exists) return;
-        const u = snap.data();
-        document.getElementById('dashName').textContent = u.name || 'User';
-        document.getElementById('dashPts').textContent = (u.points||0).toLocaleString();
-        document.getElementById('navPts').textContent = (u.points||0).toLocaleString();
-        document.getElementById('refCode').textContent = u.referralCode || '—';
-        const pct = Math.min(Math.round(((u.points||0)/1000)*100),100);
-        document.getElementById('progressFill').style.width = pct+'%';
-        document.getElementById('progPct').textContent = pct+'%';
-        const hist = u.history || [];
-        const histEl = document.getElementById('historyList');
-        histEl.innerHTML = hist.length===0
-          ? '<div style="color:var(--muted);font-size:13px;">No activity yet!</div>'
-          : hist.slice(0,8).map(h=>`
-            <div class="hist-item">
-              <div><div class="hist-reason">${h.reason}</div><div class="hist-date">${new Date(h.date).toLocaleDateString()}</div></div>
-              <div style="font-size:14px;font-weight:600;color:${h.amount<0?'var(--danger)':'var(--success)'};">${h.amount>0?'+':''}${h.amount}</div>
-            </div>`).join('');
-      });
+      
+      // Try to get/create user doc
+      const userRef = db.collection('users').doc(user.uid);
+      
+      try {
+        // Listen realtime
+        userRef.onSnapshot(snap => {
+          if (snap.exists) {
+            const u = snap.data();
+            updateUI(u.points, u.name, u.referralCode, u.history);
+          } else {
+            // Create user doc if missing
+            const myCode = Math.random().toString(36).substring(2,8).toUpperCase();
+            const email = user.email || '';
+            const name = email.split('@')[0] || 'User';
+            userRef.set({
+              name, email, points: 100,
+              referralCode: myCode,
+              joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+              history: [{ amount: 100, reason: 'Welcome bonus 🎁', date: new Date().toISOString() }]
+            }).then(() => {
+              showToast('Account created! +100 welcome points! 🎉');
+            });
+          }
+        });
+      } catch(e) {
+        console.error(e);
+        // Fallback - show email
+        updateUI(0, user.email, '—', []);
+      }
     });
 
     async function redeem(method, required) {
       const user = auth.currentUser;
       if (!user) return;
       const snap = await db.collection('users').doc(user.uid).get();
-      const pts = snap.data().points || 0;
+      const pts = snap.exists ? (snap.data().points || 0) : 0;
       if (pts < required) { showToast(`Need ${required} pts! You have ${pts} pts.`); return; }
       if (confirm(`Redeem ${required} points via ${method}?`)) {
         await db.collection('users').doc(user.uid).update({
           points: firebase.firestore.FieldValue.increment(-required),
           history: firebase.firestore.FieldValue.arrayUnion({ amount: -required, reason: `Redeemed via ${method} 💸`, date: new Date().toISOString() })
         });
-        showToast(`Redemption via ${method} requested! Processing in 24h.`);
+        showToast(`Redemption via ${method} requested!`);
       }
     }
 
@@ -179,8 +203,10 @@
       navigator.clipboard.writeText(`Join EarnZone! Use code: ${code} → earnzone-app.vercel.app`);
       showToast('Referral link copied! 🔗');
     }
-    function shareRef() { copyRef(); }
-    function doLogout() { auth.signOut().then(()=>window.location.href='../index.html'); }
+
+    function doLogout() {
+      auth.signOut().then(()=>window.location.href='../index.html');
+    }
   </script>
 </body>
 </html>
