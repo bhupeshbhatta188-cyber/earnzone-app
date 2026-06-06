@@ -258,7 +258,7 @@
 
     function collectPoints() {
       if (!document.getElementById('collectBtn').classList.contains('ready')) return;
-      EZ.addPoints(currentVideo.pts, `Watched: ${currentVideo.title}`);
+      EZ.addPoints(currentVideo.pts, 'Watched: ' + currentVideo.title);
       if (!watched.includes(currentVideo.id)) {
         watched.push(currentVideo.id);
         localStorage.setItem('ez_watched', JSON.stringify(watched));
