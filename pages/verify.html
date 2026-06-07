@@ -4,93 +4,77 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EarnZone — Verify Email</title>
+  <link rel="icon" href="../favicon.svg" />
   <link rel="stylesheet" href="../css/style.css" />
   <style>
-    body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
-    .box{background:var(--dark2);border:1px solid var(--border);border-radius:24px;padding:40px;width:100%;max-width:420px;text-align:center}
-    .icon{font-size:64px;margin-bottom:20px}
-    h1{font-size:24px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:12px}
-    p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px}
-    .btn{width:100%;padding:13px;background:var(--gold);color:var(--dark);font-size:15px;font-weight:600;border:none;border-radius:10px;cursor:pointer;font-family:'Syne',sans-serif;margin-bottom:12px;transition:all 0.2s}
-    .btn:hover{background:var(--gold-dark)}
-    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
-    .email-show{background:var(--dark3);border-radius:10px;padding:12px;font-size:14px;color:var(--gold);margin-bottom:24px;word-break:break-all}
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+    .box { background: var(--dark2); border: 1px solid var(--border); border-radius: 20px; padding: 40px 36px; width: 100%; max-width: 400px; text-align: center; }
+    .icon { font-size: 56px; margin-bottom: 20px; }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+    p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 8px; }
+    .email-show { background: var(--dark3); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--gold); margin: 16px 0; word-break: break-all; }
+    .btn-full { width: 100%; padding: 12px; background: var(--gold); color: var(--dark); font-size: 14px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; font-family: 'Inter', sans-serif; margin-bottom: 10px; transition: all 0.2s; }
+    .btn-full:hover { background: var(--gold-dark); }
+    .btn-ghost { width: 100%; padding: 11px; background: transparent; border: 1px solid var(--border); color: var(--muted); font-size: 13px; border-radius: 10px; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+    .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+    .hint { font-size: 12px; color: var(--muted); margin-top: 14px; }
   </style>
 </head>
 <body>
-  <div class="box">
+  <div class="box fade-up">
     <div class="icon">📧</div>
     <h1>Verify Your Email</h1>
     <p>We sent a verification link to:</p>
-    <div class="email-show" id="userEmail">—</div>
-    <p>Click the link in your email to verify your account and get your <strong style="color:var(--gold);">100 bonus points!</strong></p>
-    <button class="btn" onclick="checkVerified()">I've verified — Continue →</button>
-    <button class="btn btn-outline" onclick="resendEmail()">Resend verification email</button>
-    <div style="margin-top:16px;font-size:12px;color:var(--muted);">Check spam folder if you don't see it!</div>
+    <div class="email-show" id="emailShow">—</div>
+    <p>Click the link in your email to activate your account and receive your <strong style="color:var(--gold);">100 bonus points!</strong></p>
+    <br>
+    <button class="btn-full" onclick="checkVerified()">I've verified — Continue →</button>
+    <button class="btn-ghost" onclick="resend()">Resend verification email</button>
+    <div class="hint">📁 Check your spam/junk folder too!</div>
   </div>
   <div class="toast" id="toast"></div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="../js/app.js"></script>
   <script>
-    firebase.initializeApp({
-      apiKey: "AIzaSyB94zgBIclBjVTgiuR_ceRuCoQtx555Qk8",
-      authDomain: "earnzone-51a4f.firebaseapp.com",
-      projectId: "earnzone-51a4f",
-      storageBucket: "earnzone-51a4f.firebasestorage.app",
-      messagingSenderId: "263039604264",
-      appId: "1:263039604264:web:845b2389b49e572209071d"
-    });
+    firebase.initializeApp(FIREBASE_CONFIG);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg; t.style.display = 'block';
-      setTimeout(()=>t.style.display='none', 3000);
-    }
-
-    auth.onAuthStateChanged(user => {
-      if (!user) { window.location.href = 'login.html'; return; }
-      document.getElementById('userEmail').textContent = user.email;
-      // Auto check if already verified
-      if (user.emailVerified) givePointsAndRedirect(user);
-    });
+    // Show email from URL
+    const params = new URLSearchParams(window.location.search);
+    const emailParam = params.get('email');
+    if (emailParam) document.getElementById('emailShow').textContent = emailParam;
 
     async function checkVerified() {
       const user = auth.currentUser;
-      if (!user) return;
-      await user.reload(); // Refresh user data
+      if (!user) { showToast('Please login first.'); setTimeout(()=>window.location.href='login.html', 1500); return; }
+      await user.reload();
       if (user.emailVerified) {
-        await givePointsAndRedirect(user);
+        // Give welcome bonus
+        const snap = await db.collection('users').doc(user.uid).get();
+        if (snap.exists && !snap.data().emailVerified) {
+          await db.collection('users').doc(user.uid).update({
+            points: 100, emailVerified: true,
+            history: firebase.firestore.FieldValue.arrayUnion({
+              amount: 100, reason: 'Welcome bonus 🎁', date: new Date().toISOString()
+            })
+          });
+        }
+        showToast('Email verified! +100 pts 🎉');
+        setTimeout(() => window.location.href = 'dashboard.html', 1500);
       } else {
-        showToast('Email not verified yet! Check your inbox.');
+        showToast('Not verified yet! Check your inbox and spam folder.');
       }
     }
 
-    async function givePointsAndRedirect(user) {
-      const snap = await db.collection('users').doc(user.uid).get();
-      if (snap.exists && !snap.data().emailVerified) {
-        // Give welcome bonus now that email is verified
-        await db.collection('users').doc(user.uid).update({
-          points: 100,
-          emailVerified: true,
-          history: firebase.firestore.FieldValue.arrayUnion({
-            amount: 100,
-            reason: 'Welcome bonus 🎁 (email verified)',
-            date: new Date().toISOString()
-          })
-        });
-      }
-      window.location.href = 'dashboard.html';
-    }
-
-    async function resendEmail() {
+    async function resend() {
       const user = auth.currentUser;
-      if (!user) return;
+      if (!user) { showToast('Please signup first.'); return; }
       await user.sendEmailVerification();
-      showToast('Verification email sent! Check your inbox.');
+      showToast('Verification email sent! Check inbox.');
     }
   </script>
 </body>

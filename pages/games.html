@@ -4,407 +4,207 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EarnZone — Play & Earn</title>
+  <link rel="icon" href="../favicon.svg" />
   <link rel="stylesheet" href="../css/style.css" />
   <style>
-    .page{padding-top:80px}
-    .page-header{padding:32px 24px 0;max-width:1100px;margin:0 auto}
-    .page-title{font-size:28px;font-weight:700;font-family:'Syne',sans-serif}
+    .page{padding-top:60px}
+    .page-hero{padding:40px 20px 0;max-width:1100px;margin:0 auto}
+    .page-title{font-size:26px;font-weight:700}
     .page-sub{color:var(--muted);font-size:14px;margin-top:6px;margin-bottom:32px}
-    .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding:0 24px 40px;max-width:1100px;margin:0 auto}
-    .game-card{background:var(--dark2);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:transform 0.2s,border-color 0.2s}
-    .game-card:hover{transform:translateY(-6px);border-color:rgba(245,158,11,0.4)}
-    .game-thumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:64px;position:relative}
-    .g1{background:linear-gradient(135deg,#1a1a2e,#6a11cb)}
-    .g2{background:linear-gradient(135deg,#134e5e,#71b280)}
-    .g3{background:linear-gradient(135deg,#c94b4b,#4b134f)}
-    .g4{background:linear-gradient(135deg,#f7971e,#ffd200)}
-    .game-badge-tag{position:absolute;top:10px;right:10px;font-size:10px;font-weight:600;padding:3px 10px;border-radius:999px}
-    .hot{background:#ef4444;color:#fff}
-    .new-tag{background:#10b981;color:#fff}
-    .game-body{padding:18px 20px}
-    .game-name{font-size:17px;font-weight:600;font-family:'Syne',sans-serif;margin-bottom:4px}
-    .game-desc{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:14px}
-    .game-footer{display:flex;align-items:center;justify-content:space-between}
-    .game-pts-earn{font-size:13px;color:var(--gold);font-weight:500}
-    .play-tag{padding:7px 16px;background:var(--gold);color:var(--dark);border-radius:8px;font-size:13px;font-weight:500}
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
-    .modal-overlay.open{display:flex}
-    .modal{background:var(--dark2);border:1px solid var(--border);border-radius:24px;width:100%;max-width:480px;padding:32px;position:relative;animation:fadeUp 0.3s ease;text-align:center}
-    .modal-title{font-size:22px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:8px}
-    .modal-sub{font-size:14px;color:var(--muted);margin-bottom:28px}
-    .close-x{position:absolute;top:16px;right:16px;background:var(--dark3);border:1px solid var(--border);color:var(--text);width:32px;height:32px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-    .action-btn{padding:13px 32px;background:var(--gold);color:var(--dark);border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif;margin-top:20px;width:100%;transition:all 0.2s}
-    .action-btn:disabled{background:var(--dark3);color:var(--muted);cursor:not-allowed}
-    .result-box{background:var(--dark3);border-radius:14px;padding:20px;margin-top:20px;display:none}
-    .result-pts{font-size:36px;font-weight:700;color:var(--gold);font-family:'Syne',sans-serif}
-    .scratch-wrap{position:relative;width:220px;height:120px;margin:0 auto;border-radius:14px;overflow:hidden;cursor:crosshair}
-    #scratchCanvas{position:absolute;top:0;left:0}
-    .scratch-reveal{width:100%;height:100%;background:linear-gradient(135deg,var(--gold),#ff9500);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;font-family:'Syne',sans-serif;color:var(--dark)}
-    .quiz-q{font-size:16px;font-weight:500;margin-bottom:20px;line-height:1.5}
-    .quiz-opts{display:flex;flex-direction:column;gap:10px;text-align:left}
-    .quiz-opt{padding:12px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:14px;transition:all 0.2s}
-    .quiz-opt:hover{border-color:var(--gold)}
-    .quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,0.1);color:var(--success)}
-    .quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,0.1);color:var(--danger)}
-    .memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 auto;max-width:300px}
-    .mem-card{height:60px;border-radius:10px;background:var(--dark3);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;transition:all 0.2s;user-select:none}
-    .mem-card.flipped{background:var(--dark2);border-color:var(--gold)}
-    .mem-card.matched{background:rgba(16,185,129,0.15);border-color:var(--success)}
-    .cooldown-msg{font-size:13px;color:var(--muted);margin-top:12px}
+    .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding:0 20px 60px;max-width:1100px;margin:0 auto}
+    .game-card{background:var(--dark2);border:1px solid var(--border);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform 0.2s,border-color 0.2s}
+    .game-card:hover{transform:translateY(-5px);border-color:rgba(245,158,11,0.4)}
+    .game-thumb{height:150px;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative;background:linear-gradient(135deg,#1a1a2e,#6a11cb)}
+    .badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;background:#ef4444;color:#fff}
+    .game-body{padding:16px 18px}
+    .game-name{font-size:16px;font-weight:600;margin-bottom:4px}
+    .game-desc{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+    .game-foot{display:flex;align-items:center;justify-content:space-between}
+    .game-pts{font-size:13px;color:var(--gold);font-weight:500}
+    .play-btn{padding:7px 16px;background:var(--gold);color:var(--dark);border-radius:8px;font-size:13px;font-weight:600}
+    /* SPONSORED */
+    .slot-card{background:var(--dark2);border:2px dashed rgba(245,158,11,0.2);border-radius:18px;overflow:hidden;cursor:pointer;transition:all 0.2s}
+    .slot-card:hover{border-color:var(--gold)}
+    .slot-thumb{height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(245,158,11,0.02)}
+    .slot-icon{font-size:36px;opacity:0.3}
+    .slot-label{font-size:12px;color:var(--muted);opacity:0.6}
+    .slot-body{padding:16px 18px}
+    .slot-title{font-size:15px;font-weight:600;color:var(--muted);margin-bottom:4px}
+    .slot-desc{font-size:12px;color:var(--muted);opacity:0.7;margin-bottom:12px}
+    .slot-btn{width:100%;padding:9px;background:transparent;border:1px solid rgba(245,158,11,0.4);color:var(--gold);border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s}
+    .slot-btn:hover{background:var(--gold);color:var(--dark)}
+    /* MODAL */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+    .overlay.open{display:flex}
+    .modal{background:var(--dark2);border:1px solid var(--border);border-radius:20px;width:100%;max-width:460px;padding:28px;position:relative;text-align:center;animation:fadeUp 0.3s ease}
+    .modal h2{font-size:20px;font-weight:700;margin-bottom:6px}
+    .modal p{font-size:14px;color:var(--muted);margin-bottom:24px}
+    .close-btn{position:absolute;top:14px;right:14px;background:var(--dark3);border:1px solid var(--border);color:var(--text);width:30px;height:30px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .spin-btn{width:100%;padding:13px;background:var(--gold);color:var(--dark);border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;transition:all 0.2s}
+    .spin-btn:disabled{opacity:0.5;cursor:not-allowed}
+    .result{background:var(--dark3);border-radius:12px;padding:18px;margin-top:16px;display:none}
+    .result-pts{font-size:40px;font-weight:700;color:var(--gold)}
+    /* ADV MODAL */
+    .price-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+    .price-box{border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:all 0.2s}
+    .price-box:hover{border-color:var(--gold)}
+    .price-dur{font-size:12px;color:var(--muted)}
+    .price-amt{font-size:22px;font-weight:700;color:var(--gold)}
+    .price-info{font-size:11px;color:var(--muted)}
+    .contact-box{background:var(--dark3);border-radius:12px;padding:16px}
+    .contact-email{font-size:18px;font-weight:700;color:var(--gold);margin:8px 0}
   </style>
 </head>
 <body>
 <nav>
-  <div class="logo"><a href="../index.html" style="color:inherit;text-decoration:none;">Earn<span>Zone</span></a></div>
+  <a href="../index.html" class="logo">Earn<span>Zone</span></a>
   <ul class="nav-links">
-    <li><a href="videos.html">Watch</a></li>
-    <li><a href="games.html" style="color:var(--gold);">Play</a></li>
+    <li><a href="games.html" class="active">Games</a></li>
+    <li><a href="videos.html">Videos</a></li>
     <li><a href="dashboard.html">Dashboard</a></li>
   </ul>
-  <div class="nav-right">
-    <div class="pts-pill">🪙 <span id="navPts">0</span> pts</div>
-  </div>
+  <div class="nav-right"><div class="pts-pill">🪙 <span id="navPts">0</span></div></div>
 </nav>
 
 <div class="page">
-  <div class="page-header">
+  <div class="page-hero">
     <div class="page-title">🎮 Play & Earn</div>
-    <div class="page-sub">Play games and earn real points saved to your account!</div>
+    <div class="page-sub">Play games to earn real points — saved to your account instantly!</div>
   </div>
   <div class="games-grid">
-    <div class="game-card" onclick="openGame('spin')">
-      <div class="game-thumb g1">🎡<span class="game-badge-tag hot">HOT</span></div>
+
+    <!-- SPIN WHEEL -->
+    <div class="game-card" onclick="openSpin()">
+      <div class="game-thumb"><span class="badge">HOT</span>🎡</div>
       <div class="game-body">
         <div class="game-name">Spin the Wheel</div>
         <div class="game-desc">Spin and win random points every time! Up to 50 pts per spin.</div>
-        <div class="game-footer"><div class="game-pts-earn">Up to +50 pts</div><div class="play-tag">Play →</div></div>
+        <div class="game-foot"><div class="game-pts">Up to +50 pts</div><div class="play-btn">Play →</div></div>
       </div>
     </div>
-    <div class="game-card" onclick="openGame('scratch')">
-      <div class="game-thumb g2">🎴<span class="game-badge-tag new-tag">NEW</span></div>
-      <div class="game-body">
-        <div class="game-name">Scratch Card</div>
-        <div class="game-desc">Scratch to reveal your hidden prize. Could be 5 to 100 pts!</div>
-        <div class="game-footer"><div class="game-pts-earn">Up to +100 pts</div><div class="play-tag">Play →</div></div>
+
+    <!-- SPONSORED SLOTS -->
+    <div class="slot-card" onclick="openAdv()">
+      <div class="slot-thumb"><div class="slot-icon">🎮</div><div class="slot-label">Available for your game</div></div>
+      <div class="slot-body">
+        <div class="slot-title">Featured Slot #1</div>
+        <div class="slot-desc">Promote your game to thousands of real users daily!</div>
+        <button class="slot-btn">Advertise Here →</button>
       </div>
     </div>
-    <div class="game-card" onclick="openGame('quiz')">
-      <div class="game-thumb g3">❓</div>
-      <div class="game-body">
-        <div class="game-name">Quiz Challenge</div>
-        <div class="game-desc">Answer 5 questions correctly and earn bonus points!</div>
-        <div class="game-footer"><div class="game-pts-earn">+5 pts per answer</div><div class="play-tag">Play →</div></div>
+    <div class="slot-card" onclick="openAdv()">
+      <div class="slot-thumb"><div class="slot-icon">🕹️</div><div class="slot-label">Available for your game</div></div>
+      <div class="slot-body">
+        <div class="slot-title">Featured Slot #2</div>
+        <div class="slot-desc">Get thousands of players on your game daily!</div>
+        <button class="slot-btn">Advertise Here →</button>
       </div>
     </div>
-    <div class="game-card" onclick="openGame('memory')">
-      <div class="game-thumb g4">🃏</div>
-      <div class="game-body">
-        <div class="game-name">Memory Match</div>
-        <div class="game-desc">Match all pairs to win! Earn points for each correct match.</div>
-        <div class="game-footer"><div class="game-pts-earn">+5 pts per match</div><div class="play-tag">Play →</div></div>
+    <div class="slot-card" onclick="openAdv()">
+      <div class="slot-thumb"><div class="slot-icon">🏆</div><div class="slot-label">Available for your game</div></div>
+      <div class="slot-body">
+        <div class="slot-title">Featured Slot #3</div>
+        <div class="slot-desc">Premium placement — maximum visibility!</div>
+        <button class="slot-btn">Advertise Here →</button>
       </div>
     </div>
+
   </div>
 </div>
 
 <!-- SPIN MODAL -->
-<div class="modal-overlay" id="spinModal">
+<div class="overlay" id="spinModal">
   <div class="modal">
-    <button class="close-x" onclick="closeAll()">✕</button>
-    <div class="modal-title">🎡 Spin the Wheel</div>
-    <div class="modal-sub">Spin to win up to 50 bonus points!</div>
-    <canvas id="wheelCanvas" width="260" height="260"></canvas>
-    <button class="action-btn" id="spinBtn" onclick="spinWheel()">SPIN NOW!</button>
-    <div class="result-box" id="spinResult">
+    <button class="close-btn" onclick="closeAll()">✕</button>
+    <h2>🎡 Spin the Wheel</h2>
+    <p>Spin to win up to 50 bonus points!</p>
+    <canvas id="wCanvas" width="240" height="240"></canvas>
+    <button class="spin-btn" id="spinBtn" onclick="doSpin()">SPIN NOW!</button>
+    <div class="result" id="spinResult">
       <div class="result-pts" id="spinPts">+0</div>
-      <div style="font-size:14px;color:var(--muted);margin-top:4px;">Points saved to your account!</div>
-    </div>
-    <div class="cooldown-msg" id="spinCooldown"></div>
-  </div>
-</div>
-
-<!-- SCRATCH MODAL -->
-<div class="modal-overlay" id="scratchModal">
-  <div class="modal">
-    <button class="close-x" onclick="closeAll()">✕</button>
-    <div class="modal-title">🎴 Scratch Card</div>
-    <div class="modal-sub">Scratch the card to reveal your prize!</div>
-    <div class="scratch-wrap" id="scratchWrap">
-      <div class="scratch-reveal" id="scratchReveal">?</div>
-      <canvas id="scratchCanvas" width="220" height="120"></canvas>
-    </div>
-    <div id="scratchStatus" style="margin-top:16px;font-size:14px;color:var(--muted);">Scratch to reveal...</div>
-    <button class="action-btn" id="newScratchBtn" onclick="newScratch()" style="display:none;">New Card</button>
-  </div>
-</div>
-
-<!-- QUIZ MODAL -->
-<div class="modal-overlay" id="quizModal">
-  <div class="modal">
-    <button class="close-x" onclick="closeAll()">✕</button>
-    <div class="modal-title">❓ Quiz Challenge</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:16px;" id="quizScore">Question 1/5 · Score: 0 pts</div>
-    <div class="quiz-q" id="quizQ">Loading...</div>
-    <div class="quiz-opts" id="quizOpts"></div>
-    <div class="result-box" id="quizResult">
-      <div class="result-pts" id="quizFinalPts">+0</div>
-      <div style="font-size:14px;color:var(--muted);margin-top:4px;">Points saved!</div>
-      <button class="action-btn" onclick="startQuiz()">Play Again</button>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px;">Points saved to your account! 🎉</div>
     </div>
   </div>
 </div>
 
-<!-- MEMORY MODAL -->
-<div class="modal-overlay" id="memoryModal">
-  <div class="modal">
-    <button class="close-x" onclick="closeAll()">✕</button>
-    <div class="modal-title">🃏 Memory Match</div>
-    <div style="font-size:14px;color:var(--muted);margin-bottom:16px;" id="memScore">Matches: 0/8 · Points: 0</div>
-    <div class="memory-grid" id="memoryGrid"></div>
-    <div class="result-box" id="memResult">
-      <div class="result-pts" id="memFinalPts">+0</div>
-      <div style="font-size:14px;color:var(--muted);margin-top:4px;">All matched! Points saved!</div>
-      <button class="action-btn" onclick="startMemory()">Play Again</button>
+<!-- ADVERTISE MODAL -->
+<div class="overlay" id="advModal">
+  <div class="modal" style="text-align:left;">
+    <button class="close-btn" onclick="closeAll()">✕</button>
+    <h2 style="text-align:center;">🚀 Advertise Your Game</h2>
+    <p style="text-align:center;">Get real engaged players on your game daily!</p>
+    <div class="price-row">
+      <div class="price-box"><div class="price-dur">7 Days</div><div class="price-amt">₹500</div><div class="price-info">~500 players/day</div></div>
+      <div class="price-box"><div class="price-dur">30 Days</div><div class="price-amt">₹1500</div><div class="price-info">~1000 players/day</div></div>
+      <div class="price-box"><div class="price-dur">90 Days</div><div class="price-amt">₹3500</div><div class="price-info">Best value!</div></div>
+      <div class="price-box"><div class="price-dur">Custom</div><div class="price-amt">Talk</div><div class="price-info">Contact us</div></div>
+    </div>
+    <div class="contact-box" style="text-align:center;">
+      <div style="font-size:13px;color:var(--muted);">Contact us to advertise:</div>
+      <div class="contact-email">earnzone.support@gmail.com</div>
+      <div style="font-size:12px;color:var(--muted);">Game live within 24 hours!</div>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="../js/app.js"></script>
 <script>
-  firebase.initializeApp({
-    apiKey: "AIzaSyB94zgBIclBjVTgiuR_ceRuCoQtx555Qk8",
-    authDomain: "earnzone-51a4f.firebaseapp.com",
-    projectId: "earnzone-51a4f",
-    storageBucket: "earnzone-51a4f.firebasestorage.app",
-    messagingSenderId: "263039604264",
-    appId: "1:263039604264:web:845b2389b49e572209071d"
-  });
+  firebase.initializeApp(FIREBASE_CONFIG);
   const auth = firebase.auth();
   const db = firebase.firestore();
-
-  auth.onAuthStateChanged(user => {
-    if (!user) window.location.href = 'login.html';
-    else {
-      db.collection('users').doc(user.uid).get().then(snap => {
-        if (snap.exists) document.getElementById('navPts').textContent = snap.data().points || 0;
-      });
-    }
+  auth.onAuthStateChanged(u => {
+    if (!u) { window.location.href = 'login.html'; return; }
+    db.collection('users').doc(u.uid).get().then(s => { if(s.exists) document.getElementById('navPts').textContent = s.data().points||0; });
   });
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.style.display = 'block';
-    setTimeout(()=>t.style.display='none', 3000);
-  }
-
-  async function addPoints(amount, reason) {
-    const user = auth.currentUser;
-    if (!user) return;
-    await db.collection('users').doc(user.uid).update({
-      points: firebase.firestore.FieldValue.increment(amount),
-      history: firebase.firestore.FieldValue.arrayUnion({ amount, reason, date: new Date().toISOString() })
+  function showToast(m){let t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+  async function addPts(amt, reason) {
+    const u = auth.currentUser; if(!u) return;
+    await db.collection('users').doc(u.uid).update({
+      points: firebase.firestore.FieldValue.increment(amt),
+      history: firebase.firestore.FieldValue.arrayUnion({amount:amt,reason,date:new Date().toISOString()})
     });
-    // Update navbar
-    const snap = await db.collection('users').doc(user.uid).get();
-    document.getElementById('navPts').textContent = snap.data().points || 0;
-    showToast('+' + amount + ' pts saved! 🎉');
+    const s = await db.collection('users').doc(u.uid).get();
+    document.getElementById('navPts').textContent = s.data().points||0;
+    showToast('+'+amt+' pts saved! 🎉');
   }
-
-  function openGame(type) {
-    closeAll();
-    if (type==='spin') { document.getElementById('spinModal').classList.add('open'); drawWheel(); }
-    if (type==='scratch') { document.getElementById('scratchModal').classList.add('open'); newScratch(); }
-    if (type==='quiz') { document.getElementById('quizModal').classList.add('open'); startQuiz(); }
-    if (type==='memory') { document.getElementById('memoryModal').classList.add('open'); startMemory(); }
-  }
-  function closeAll() { document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open')); }
-
-  // ── SPIN WHEEL ──
-  const segments=[5,10,15,5,25,10,50,5,10,20,5,15];
-  const colors=['#1e293b','#334155','#1e3a5f','#2d1b69','#1a1a2e','#134e5e','#c94b4b','#1e293b','#334155','#1e3a5f','#2d1b69','#134e5e'];
+  function openSpin(){closeAll();document.getElementById('spinModal').classList.add('open');drawWheel();}
+  function openAdv(){closeAll();document.getElementById('advModal').classList.add('open');}
+  function closeAll(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));}
+  const segs=[5,10,15,5,25,10,50,5,10,20,5,15];
+  const cols=['#1e293b','#334155','#1e3a5f','#2d1b69','#1a1a2e','#134e5e','#c94b4b','#1e293b','#334155','#1e3a5f','#2d1b69','#134e5e'];
   let spinning=false;
-
-  function drawWheel(angle=0) {
-    const c=document.getElementById('wheelCanvas');
-    const ctx=c.getContext('2d');
-    const cx=130,cy=130,r=120;
-    const arc=(2*Math.PI)/segments.length;
-    ctx.clearRect(0,0,260,260);
-    segments.forEach((s,i)=>{
-      const start=angle+i*arc,end=start+arc;
-      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);
-      ctx.fillStyle=colors[i];ctx.fill();
+  function drawWheel(a=0){
+    const c=document.getElementById('wCanvas'),ctx=c.getContext('2d'),cx=120,cy=120,r=110,arc=(2*Math.PI)/segs.length;
+    ctx.clearRect(0,0,240,240);
+    segs.forEach((s,i)=>{
+      const st=a+i*arc,en=st+arc;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,st,en);ctx.fillStyle=cols[i];ctx.fill();
       ctx.strokeStyle='#0a0f1e';ctx.lineWidth=2;ctx.stroke();
-      ctx.save();ctx.translate(cx,cy);ctx.rotate(start+arc/2);
-      ctx.fillStyle='#fff';ctx.font='bold 13px Syne,sans-serif';
-      ctx.textAlign='right';ctx.fillText(s+'pts',r-12,5);ctx.restore();
+      ctx.save();ctx.translate(cx,cy);ctx.rotate(st+arc/2);ctx.fillStyle='#fff';ctx.font='bold 12px Inter,sans-serif';ctx.textAlign='right';ctx.fillText(s+'pts',r-10,4);ctx.restore();
     });
-    ctx.beginPath();ctx.moveTo(cx,cy-r-4);ctx.lineTo(cx-10,cy-r+16);ctx.lineTo(cx+10,cy-r+16);
-    ctx.fillStyle='#f59e0b';ctx.fill();
+    ctx.beginPath();ctx.moveTo(cx,cy-r-4);ctx.lineTo(cx-8,cy-r+14);ctx.lineTo(cx+8,cy-r+14);ctx.fillStyle='#f59e0b';ctx.fill();
   }
-
-  function spinWheel() {
-    if (spinning) return;
-    spinning=true;
+  function doSpin(){
+    if(spinning)return;spinning=true;
     document.getElementById('spinBtn').disabled=true;
     document.getElementById('spinResult').style.display='none';
-    const total=(Math.random()*10+5)*2*Math.PI;
-    const duration=3000;
-    const start=performance.now();
-    let angle=0;
-    function animate(now) {
-      const t=Math.min((now-start)/duration,1);
-      const ease=1-Math.pow(1-t,4);
-      angle=ease*total;
+    const total=(Math.random()*10+5)*2*Math.PI,dur=3000,st=performance.now();
+    function anim(now){
+      const t=Math.min((now-st)/dur,1),ease=1-Math.pow(1-t,4),angle=ease*total;
       drawWheel(angle);
-      if (t<1) return requestAnimationFrame(animate);
+      if(t<1)return requestAnimationFrame(anim);
       spinning=false;
-      const arc=(2*Math.PI)/segments.length;
-      const norm=((2*Math.PI)-(angle%(2*Math.PI)))%(2*Math.PI);
-      const idx=Math.floor(norm/arc)%segments.length;
-      const won=segments[idx];
+      const arc=(2*Math.PI)/segs.length,norm=((2*Math.PI)-(angle%(2*Math.PI)))%(2*Math.PI),idx=Math.floor(norm/arc)%segs.length,won=segs[idx];
       document.getElementById('spinPts').textContent='+'+won;
       document.getElementById('spinResult').style.display='block';
       document.getElementById('spinBtn').disabled=false;
-      addPoints(won, 'Spin the Wheel 🎡');
+      addPts(won,'Spin the Wheel 🎡');
     }
-    requestAnimationFrame(animate);
-  }
-
-  // ── SCRATCH ──
-  let scratchPrize=0,scratchCollected=false;
-  function newScratch() {
-    scratchCollected=false;
-    const prizes=[5,5,10,10,15,20,25,50,75,100];
-    scratchPrize=prizes[Math.floor(Math.random()*prizes.length)];
-    document.getElementById('scratchReveal').textContent='+'+scratchPrize+' pts';
-    document.getElementById('scratchStatus').textContent='Scratch to reveal...';
-    document.getElementById('newScratchBtn').style.display='none';
-    const c=document.getElementById('scratchCanvas');
-    const ctx=c.getContext('2d');
-    ctx.clearRect(0,0,220,120);
-    const grad=ctx.createLinearGradient(0,0,220,120);
-    grad.addColorStop(0,'#475569');grad.addColorStop(1,'#334155');
-    ctx.fillStyle=grad;ctx.fillRect(0,0,220,120);
-    ctx.fillStyle='#94a3b8';ctx.font='bold 18px Syne,sans-serif';
-    ctx.textAlign='center';ctx.fillText('✦ Scratch Here ✦',110,65);
-    let isDrawing=false,scratched=0;
-    c.onmousedown=c.ontouchstart=()=>isDrawing=true;
-    c.onmouseup=c.ontouchend=()=>isDrawing=false;
-    c.onmousemove=c.ontouchmove=(e)=>{
-      if (!isDrawing||scratchCollected) return;
-      const rect=c.getBoundingClientRect();
-      const x=(e.clientX||e.touches[0].clientX)-rect.left;
-      const y=(e.clientY||e.touches[0].clientY)-rect.top;
-      ctx.globalCompositeOperation='destination-out';
-      ctx.beginPath();ctx.arc(x,y,20,0,Math.PI*2);ctx.fill();
-      scratched++;
-      if (scratched>30&&!scratchCollected) {
-        scratchCollected=true;
-        document.getElementById('scratchStatus').textContent='🎉 You won +'+scratchPrize+' pts!';
-        document.getElementById('newScratchBtn').style.display='block';
-        addPoints(scratchPrize,'Scratch Card 🎴');
-      }
-    };
-  }
-
-  // ── QUIZ ──
-  const questions=[
-    {q:"What is the capital of Nepal?",opts:["Pokhara","Kathmandu","Lalitpur","Biratnagar"],ans:1},
-    {q:"Which planet is closest to the Sun?",opts:["Venus","Earth","Mars","Mercury"],ans:3},
-    {q:"How many sides does a hexagon have?",opts:["5","6","7","8"],ans:1},
-    {q:"What is 15 × 15?",opts:["215","225","235","245"],ans:1},
-    {q:"Which is the largest ocean?",opts:["Atlantic","Indian","Arctic","Pacific"],ans:3},
-    {q:"What color mixing red and blue gives?",opts:["Green","Purple","Orange","Brown"],ans:1},
-    {q:"How many months have 31 days?",opts:["5","6","7","8"],ans:2},
-    {q:"Square root of 144?",opts:["11","12","13","14"],ans:1},
-  ];
-  let qIdx=0,qScore=0,qTotal=5,quizPtsEarned=0;
-
-  function startQuiz() {
-    qIdx=0;qScore=0;quizPtsEarned=0;
-    document.getElementById('quizResult').style.display='none';
-    showQuestion();
-  }
-
-  function showQuestion() {
-    if (qIdx>=qTotal) { endQuiz(); return; }
-    const shuffled=[...questions].sort(()=>Math.random()-0.5);
-    const q=shuffled[qIdx];
-    document.getElementById('quizScore').textContent=`Question ${qIdx+1}/${qTotal} · Score: ${qScore} pts`;
-    document.getElementById('quizQ').textContent=q.q;
-    document.getElementById('quizOpts').innerHTML=q.opts.map((o,i)=>
-      `<div class="quiz-opt" onclick="answerQ(${i},${q.ans},this)">${o}</div>`
-    ).join('');
-  }
-
-  function answerQ(chosen,correct,el) {
-    document.querySelectorAll('.quiz-opt').forEach(o=>o.style.pointerEvents='none');
-    if (chosen===correct) {
-      el.classList.add('correct');
-      qScore+=5; quizPtsEarned+=5;
-      addPoints(5,'Quiz correct answer ❓');
-    } else {
-      el.classList.add('wrong');
-      document.querySelectorAll('.quiz-opt')[correct].classList.add('correct');
-    }
-    qIdx++;
-    setTimeout(showQuestion,1000);
-  }
-
-  function endQuiz() {
-    document.getElementById('quizResult').style.display='block';
-    document.getElementById('quizFinalPts').textContent='+'+qScore;
-  }
-
-  // ── MEMORY ──
-  const emojis=['🎯','🎮','🏆','💰','⭐','🎁','🔥','💎'];
-  let memCards=[],memFlipped=[],memMatched=0,memPts=0,memLock=false;
-
-  function startMemory() {
-    memMatched=0;memPts=0;memFlipped=[];memLock=false;
-    document.getElementById('memResult').style.display='none';
-    document.getElementById('memScore').textContent='Matches: 0/8 · Points: 0';
-    const deck=[...emojis,...emojis].sort(()=>Math.random()-0.5);
-    memCards=deck;
-    document.getElementById('memoryGrid').innerHTML=deck.map((e,i)=>
-      `<div class="mem-card" id="mc${i}" onclick="flipCard(${i})"></div>`
-    ).join('');
-  }
-
-  function flipCard(i) {
-    if (memLock||memFlipped.includes(i)||document.getElementById('mc'+i).classList.contains('matched')) return;
-    const card=document.getElementById('mc'+i);
-    card.textContent=memCards[i];card.classList.add('flipped');
-    memFlipped.push(i);
-    if (memFlipped.length===2) {
-      memLock=true;
-      const [a,b]=memFlipped;
-      if (memCards[a]===memCards[b]) {
-        document.getElementById('mc'+a).classList.add('matched');
-        document.getElementById('mc'+b).classList.add('matched');
-        memMatched++;memPts+=5;
-        addPoints(5,'Memory Match 🃏');
-        document.getElementById('memScore').textContent=`Matches: ${memMatched}/8 · Points: ${memPts}`;
-        memFlipped=[];memLock=false;
-        if (memMatched===8) {
-          document.getElementById('memResult').style.display='block';
-          document.getElementById('memFinalPts').textContent='+'+memPts;
-        }
-      } else {
-        setTimeout(()=>{
-          document.getElementById('mc'+a).textContent='';
-          document.getElementById('mc'+b).textContent='';
-          document.getElementById('mc'+a).classList.remove('flipped');
-          document.getElementById('mc'+b).classList.remove('flipped');
-          memFlipped=[];memLock=false;
-        },900);
-      }
-    }
+    requestAnimationFrame(anim);
   }
 </script>
 </body>

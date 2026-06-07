@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EarnZone — Advertise Your Game</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .page{padding-top:80px;max-width:900px;margin:0 auto;padding-left:24px;padding-right:24px;padding-bottom:60px}
+    .hero{text-align:center;padding:60px 0 40px}
+    .hero h1{font-size:36px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:12px}
+    .hero p{font-size:16px;color:var(--muted);max-width:500px;margin:0 auto}
+    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:40px 0}
+    .stat-card{background:var(--dark2);border:1px solid var(--border);border-radius:16px;padding:24px;text-align:center}
+    .stat-num{font-size:32px;font-weight:700;color:var(--gold);font-family:'Syne',sans-serif}
+    .stat-label{font-size:13px;color:var(--muted);margin-top:6px}
+    h2{font-size:24px;font-weight:700;font-family:'Syne',sans-serif;margin:40px 0 20px}
+    .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:40px}
+    .price-card{background:var(--dark2);border:1px solid var(--border);border-radius:20px;padding:28px 20px;text-align:center;transition:all 0.2s;position:relative}
+    .price-card:hover{border-color:var(--gold);transform:translateY(-4px)}
+    .price-card.popular{border-color:var(--gold)}
+    .popular-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--dark);font-size:11px;font-weight:700;padding:4px 16px;border-radius:999px}
+    .price-duration{font-size:13px;color:var(--muted);margin-bottom:8px}
+    .price-amount{font-size:36px;font-weight:700;color:var(--gold);font-family:'Syne',sans-serif}
+    .price-period{font-size:13px;color:var(--muted)}
+    .price-features{list-style:none;margin:16px 0;text-align:left}
+    .price-features li{font-size:13px;color:var(--muted);padding:4px 0;display:flex;align-items:center;gap:8px}
+    .price-features li::before{content:'✅';font-size:12px}
+    .price-btn{width:100%;padding:11px;background:var(--gold);color:var(--dark);border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif;margin-top:16px}
+    .contact-section{background:var(--dark2);border:1px solid var(--border);border-radius:20px;padding:40px;text-align:center;margin-top:40px}
+    .contact-section h2{margin-top:0}
+    .contact-email{font-size:24px;font-weight:700;color:var(--gold);font-family:'Syne',sans-serif;margin:16px 0}
+    .contact-section p{font-size:14px;color:var(--muted);line-height:1.7}
+    .how-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0}
+    .step{background:var(--dark2);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center}
+    .step-num{font-size:32px;font-weight:700;color:rgba(245,158,11,0.2);font-family:'Syne',sans-serif}
+    .step-title{font-size:14px;font-weight:600;margin:8px 0 4px}
+    .step-desc{font-size:12px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo"><a href="index.html" style="color:inherit;text-decoration:none;">Earn<span>Zone</span></a></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="pages/login.html">Login</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="mailto:earnzone.support@gmail.com" class="btn btn-gold" style="font-size:13px;padding:8px 16px;">Contact Us</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="hero">
+      <div style="font-size:12px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">For Game Developers & Businesses</div>
+      <h1>Advertise Your Game on EarnZone</h1>
+      <p>Get thousands of real, engaged players on your game daily. Our users earn points by playing — maximum engagement guaranteed!</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num">5K+</div>
+        <div class="stat-label">Monthly Active Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">30min</div>
+        <div class="stat-label">Avg. Session Time</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">95%</div>
+        <div class="stat-label">Nepal Audience</div>
+      </div>
+    </div>
+
+    <h2>How It Works</h2>
+    <div class="how-steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Contact Us</div>
+        <div class="step-desc">Send your game link and budget to our email</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">We Set It Up</div>
+        <div class="step-desc">Your game goes live on EarnZone within 24 hours</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">Users Play</div>
+        <div class="step-desc">Thousands of users play your game to earn points</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title">You Grow</div>
+        <div class="step-desc">Get players, reviews, and real engagement</div>
+      </div>
+    </div>
+
+    <h2>Pricing Plans</h2>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-duration">Starter</div>
+        <div class="price-amount">₹500</div>
+        <div class="price-period">per 7 days</div>
+        <ul class="price-features">
+          <li>1 game slot</li>
+          <li>~500 players/day</li>
+          <li>Basic placement</li>
+          <li>7 day campaign</li>
+        </ul>
+        <button class="price-btn" onclick="window.location.href='mailto:earnzone.support@gmail.com?subject=Starter Plan'">Get Started</button>
+      </div>
+      <div class="price-card popular">
+        <div class="popular-tag">⭐ POPULAR</div>
+        <div class="price-duration">Growth</div>
+        <div class="price-amount">₹1500</div>
+        <div class="price-period">per 30 days</div>
+        <ul class="price-features">
+          <li>1 featured slot</li>
+          <li>~1000 players/day</li>
+          <li>Top placement</li>
+          <li>30 day campaign</li>
+          <li>Monthly report</li>
+        </ul>
+        <button class="price-btn" onclick="window.location.href='mailto:earnzone.support@gmail.com?subject=Growth Plan'">Get Started</button>
+      </div>
+      <div class="price-card">
+        <div class="price-duration">Premium</div>
+        <div class="price-amount">₹3500</div>
+        <div class="price-period">per 90 days</div>
+        <ul class="price-features">
+          <li>2 featured slots</li>
+          <li>~2000 players/day</li>
+          <li>Prime placement</li>
+          <li>90 day campaign</li>
+          <li>Weekly reports</li>
+          <li>Priority support</li>
+        </ul>
+        <button class="price-btn" onclick="window.location.href='mailto:earnzone.support@gmail.com?subject=Premium Plan'">Get Started</button>
+      </div>
+    </div>
+
+    <div class="contact-section">
+      <h2>Ready to Get Started?</h2>
+      <p>Send us your game details and we'll set everything up within 24 hours!</p>
+      <div class="contact-email">earnzone.support@gmail.com</div>
+      <p style="font-size:13px;">Include: Game name, game URL/APK, preferred plan, and your contact number</p>
+      <button class="btn btn-gold" style="margin-top:16px;padding:12px 32px;" onclick="window.location.href='mailto:earnzone.support@gmail.com?subject=Game Advertising Inquiry&body=Game Name: %0AGame URL: %0APlan: %0AContact: '">Send Email Now →</button>
+    </div>
+  </div>
+</body>
+</html>
