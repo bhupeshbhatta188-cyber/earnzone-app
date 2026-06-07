@@ -91,8 +91,7 @@
       btn.disabled = true; btn.textContent = 'Logging in...';
       try {
         await auth.signInWithEmailAndPassword(email, pass);
-        window.location.href = 'dashboard.html';
-      } catch(e) {
+        } catch(e) {
         err.textContent = 'Invalid email or password!';
         err.style.display = 'block';
         btn.disabled = false; btn.textContent = 'Login →';
@@ -112,15 +111,20 @@
       }
       btn.disabled = true; btn.textContent = 'Creating account...';
       try {
-        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+        const cred = const cred = await auth.createUserWithEmailAndPassword(email, pass);
+        await cred.user.sendEmailVerification();
         const uid = cred.user.uid;
         const myCode = Math.random().toString(36).substring(2,8).toUpperCase();
         await db.collection('users').doc(uid).set({
-          name, email, points: 100,
+          name, email, points: 0,
           referralCode: myCode,
+          emailVerified: false,
           joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          history: [{ amount: 100, reason: 'Welcome bonus 🎁', date: new Date().toISOString() }]
+          history: []
         });
+        // Redirect to verify page
+        window.location.href = 'verify.html';
+        return;
         await db.collection('referrals').doc(myCode).set({ uid });
         if (ref) {
           const refDoc = await db.collection('referrals').doc(ref).get();
@@ -131,8 +135,7 @@
             });
           }
         }
-        window.location.href = 'dashboard.html';
-      } catch(e) {
+        } catch(e) {
         err.textContent = e.message;
         err.style.display = 'block';
         btn.disabled = false; btn.textContent = 'Create Account & Earn →';

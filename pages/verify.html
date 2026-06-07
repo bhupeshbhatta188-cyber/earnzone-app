@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EarnZone — Verify Email</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+    .box{background:var(--dark2);border:1px solid var(--border);border-radius:24px;padding:40px;width:100%;max-width:420px;text-align:center}
+    .icon{font-size:64px;margin-bottom:20px}
+    h1{font-size:24px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:12px}
+    p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px}
+    .btn{width:100%;padding:13px;background:var(--gold);color:var(--dark);font-size:15px;font-weight:600;border:none;border-radius:10px;cursor:pointer;font-family:'Syne',sans-serif;margin-bottom:12px;transition:all 0.2s}
+    .btn:hover{background:var(--gold-dark)}
+    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+    .email-show{background:var(--dark3);border-radius:10px;padding:12px;font-size:14px;color:var(--gold);margin-bottom:24px;word-break:break-all}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="icon">📧</div>
+    <h1>Verify Your Email</h1>
+    <p>We sent a verification link to:</p>
+    <div class="email-show" id="userEmail">—</div>
+    <p>Click the link in your email to verify your account and get your <strong style="color:var(--gold);">100 bonus points!</strong></p>
+    <button class="btn" onclick="checkVerified()">I've verified — Continue →</button>
+    <button class="btn btn-outline" onclick="resendEmail()">Resend verification email</button>
+    <div style="margin-top:16px;font-size:12px;color:var(--muted);">Check spam folder if you don't see it!</div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyB94zgBIclBjVTgiuR_ceRuCoQtx555Qk8",
+      authDomain: "earnzone-51a4f.firebaseapp.com",
+      projectId: "earnzone-51a4f",
+      storageBucket: "earnzone-51a4f.firebasestorage.app",
+      messagingSenderId: "263039604264",
+      appId: "1:263039604264:web:845b2389b49e572209071d"
+    });
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.style.display = 'block';
+      setTimeout(()=>t.style.display='none', 3000);
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (!user) { window.location.href = 'login.html'; return; }
+      document.getElementById('userEmail').textContent = user.email;
+      // Auto check if already verified
+      if (user.emailVerified) givePointsAndRedirect(user);
+    });
+
+    async function checkVerified() {
+      const user = auth.currentUser;
+      if (!user) return;
+      await user.reload(); // Refresh user data
+      if (user.emailVerified) {
+        await givePointsAndRedirect(user);
+      } else {
+        showToast('Email not verified yet! Check your inbox.');
+      }
+    }
+
+    async function givePointsAndRedirect(user) {
+      const snap = await db.collection('users').doc(user.uid).get();
+      if (snap.exists && !snap.data().emailVerified) {
+        // Give welcome bonus now that email is verified
+        await db.collection('users').doc(user.uid).update({
+          points: 100,
+          emailVerified: true,
+          history: firebase.firestore.FieldValue.arrayUnion({
+            amount: 100,
+            reason: 'Welcome bonus 🎁 (email verified)',
+            date: new Date().toISOString()
+          })
+        });
+      }
+      window.location.href = 'dashboard.html';
+    }
+
+    async function resendEmail() {
+      const user = auth.currentUser;
+      if (!user) return;
+      await user.sendEmailVerification();
+      showToast('Verification email sent! Check your inbox.');
+    }
+  </script>
+</body>
+</html>
