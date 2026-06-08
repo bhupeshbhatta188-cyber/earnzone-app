@@ -68,7 +68,7 @@
     const db = firebase.firestore();
 
     // If already logged in go to dashboard
-    auth.onAuthStateChanged(u => { if (u && u.emailVerified) window.location.href = 'dashboard.html'; });
+    auth.onAuthStateChanged(u => { if (u) window.location.href = 'dashboard.html'; });
 
     function show(tab) {
       document.querySelectorAll('.tab').forEach((b,i) => b.classList.toggle('active', (i===0)===(tab==='login')));
@@ -85,14 +85,7 @@
       if (!email || !pass) { err.textContent = 'Please fill all fields.'; err.style.display = 'block'; return; }
       btn.disabled = true; btn.textContent = 'Logging in...';
       try {
-        const cred = await auth.signInWithEmailAndPassword(email, pass);
-        if (!cred.user.emailVerified) {
-          await auth.signOut();
-          err.textContent = 'Please verify your email first! Check your inbox.';
-          err.style.display = 'block';
-          btn.disabled = false; btn.textContent = 'Login →';
-          return;
-        }
+        await auth.signInWithEmailAndPassword(email, pass);
         window.location.href = 'dashboard.html';
       } catch(e) {
         err.textContent = 'Invalid email or password!';
@@ -116,16 +109,14 @@
       btn.disabled = true; btn.textContent = 'Creating account...';
       try {
         const cred = await auth.createUserWithEmailAndPassword(email, pass);
-        // Send verification email
-        await cred.user.sendEmailVerification();
         const uid = cred.user.uid;
         const code = Math.random().toString(36).substring(2,8).toUpperCase();
         // Save user to Firestore (0 pts until email verified)
         await db.collection('users').doc(uid).set({
-          name, email, points: 0, referralCode: code,
-          emailVerified: false, referrals: 0, referredBy: ref || null,
+          name, email, points: 100, referralCode: code,
+          emailVerified: true, referrals: 0, referredBy: ref || null,
           joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          history: []
+          history: [{ amount: 100, reason: 'Welcome bonus 🎁', date: new Date().toISOString() }]
         });
         await db.collection('referrals').doc(code).set({ uid });
         // Reward referrer
@@ -139,8 +130,7 @@
             });
           }
         }
-        await auth.signOut();
-        window.location.href = 'verify.html?email=' + encodeURIComponent(email);
+        window.location.href = 'dashboard.html';
       } catch(e) {
         let msg = 'Something went wrong. Try again.';
         if (e.code === 'auth/email-already-in-use') msg = 'Email already registered. Please login.';
